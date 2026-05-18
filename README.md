@@ -1,2 +1,2 @@
-# BanCHQSxaBinhMy.github.io
+# BanCHQSxaBinhMy
 Web Ban CHQS
