@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuyển Quân Nghĩa Vụ Quân Sự - Xã Bình Mỹ</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ======= OVERRIDE & THÊM CHO TRANG TUYỂN QUÂN ======= */
+  .page-hero {
+    width: 100%;
+    background: linear-gradient(135deg, var(--red-dark) 0%, #6B1010 60%, #3D0A0A 100%);
+    padding: 40px 16px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '★';
+    position: absolute;
+    font-size: 200px;
+    color: rgba(255,255,255,0.03);
+    top: -30px; right: -20px;
+    pointer-events: none;
+  }
+  .page-hero-inner { max-width: 760px; margin: 0 auto; }
+  .page-hero h2 {
+    font-size: 26px; font-weight: 800;
+    color: #fff; line-height: 1.3;
+    letter-spacing: .02em;
+    margin-bottom: 8px;
+  }
+  .page-hero p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #3D2000;
+    font-size: 12px; font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .nav-tab {
+    flex: 1;
+    padding: 14px 12px;
+    text-align: center;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+    margin-bottom: -2px;
+  }
+  .nav-tab:hover { color: var(--red); }
+  .nav-tab.active {
+    color: var(--red);
+    border-bottom-color: var(--red);
+  }
+
+  /* CONTENT CARD */
+  .content-card {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: linear-gradient(90deg, var(--red-dark), var(--red));
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header-icon {
+    font-size: 20px;
+  }
+  .card-header h3 {
+    font-size: 15px; font-weight: 700;
+    color: #fff;
+  }
+  .card-body { padding: 20px 24px; }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .timeline-item {
+    display: flex;
+    gap: 16px;
+    padding-bottom: 20px;
+    position: relative;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 19px; top: 40px;
+    width: 2px;
+    bottom: 0;
+    background: var(--border);
+  }
+  .timeline-dot {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--red-light);
+    border: 2px solid var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+  .timeline-content { flex: 1; padding-top: 8px; }
+  .timeline-date {
+    font-size: 12px; font-weight: 700;
+    color: var(--red);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 4px;
+  }
+  .timeline-title {
+    font-size: 15px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .timeline-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* INFO LIST */
+  .info-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .info-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 16px;
+    background: #FAFAF8;
+    border-radius: 8px;
+    border-left: 3px solid var(--red);
+  }
+  .info-item-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .info-item-text { flex: 1; }
+  .info-item-label {
+    font-size: 12px; font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 2px;
+  }
+  .info-item-value {
+    font-size: 14px; font-weight: 500;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  /* CHECKLIST HỒ SƠ */
+  .checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .checklist-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 14px;
+    background: #FAFAF8;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .check-box {
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    border: 2px solid var(--red);
+    background: var(--red-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    color: var(--red);
+    font-weight: 700;
+  }
+  .checklist-item span { font-size: 14px; color: var(--text); font-weight: 500; }
+
+  /* FORM ĐĂNG KÝ */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+  .form-control {
+    width: 100%;
+    height: 48px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0 16px;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    background: #FAFAF8;
+    transition: border-color .2s;
+  }
+  .form-control:focus { border-color: var(--red); background: #fff; }
+  .form-control::placeholder { color: #bbb; font-weight: 400; }
+  textarea.form-control {
+    height: auto;
+    padding: 12px 16px;
+    resize: vertical;
+    min-height: 80px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .form-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .success-msg {
+    display: none;
+    background: #D5F5E3;
+    border: 1px solid #A9DFBF;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    color: #1E8449;
+    font-size: 14px; font-weight: 600;
+    margin-top: 16px;
+  }
+
+  /* ALERT BOX */
+  .alert {
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .alert-warn {
+    background: #FEF9E7;
+    border: 1px solid #F7DC6F;
+    color: #7D6608;
+  }
+  .alert-info {
+    background: #EBF5FB;
+    border: 1px solid #AED6F1;
+    color: #1A5276;
+  }
+  .alert span { font-size: 18px; flex-shrink: 0; }
+
+  /* NAV LINK GIỮA CÁC TRANG */
+  .page-nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .page-nav a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+    transition: all .2s;
+    background: var(--surface);
+  }
+  .page-nav a:hover { border-color: var(--red); color: var(--red); }
+  .page-nav a.current {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+  }
+
+  @media (max-width: 620px) {
+    .form-row { grid-template-columns: 1fr; }
+    .page-hero h2 { font-size: 20px; }
+    .card-body { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Emblem_of_Vietnam.svg"
+         style="width:52px;height:52px;object-fit:contain;flex-shrink:0;">
+    <div class="header-text">
+      <h1>BAN CHQS XÃ BÌNH MỸ</h1>
+      <p>Huyện Củ Chi – TP. Hồ Chí Minh</p>
+    </div>
+  </div>
+</div>
+<div class="stripe"></div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="hero-badge">📅 Năm 2026</div>
+    <h2>TUYỂN QUÂN NGHĨA VỤ QUÂN SỰ</h2>
+    <p>Thực hiện Luật Nghĩa vụ quân sự — Bảo vệ Tổ quốc là quyền và nghĩa vụ thiêng liêng của mỗi công dân</p>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div style="width:100%;background:var(--surface);border-bottom:1px solid var(--border);">
+  <div class="nav-tabs">
+    <a class="nav-tab active" href="tuyen-quan.html">🪖 Tuyển Quân</a>
+    <a class="nav-tab" href="tuyen-sinh.html">🎓 Tuyển Sinh</a>
+    <a class="nav-tab" href="index.html">🔍 Tra Cứu</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- NAV NHANH -->
+  <div class="page-nav" style="margin-top:0;padding-top:20px;">
+    <a href="#thoi-gian">⏰ Thời gian</a>
+    <a href="#dieu-kien">✅ Điều kiện</a>
+    <a href="#ho-so">📄 Hồ sơ</a>
+    <a href="#dang-ky">📝 Đăng ký</a>
+  </div>
+
+  <!-- THÔNG BÁO -->
+  <div class="alert alert-warn">
+    <span>⚠️</span>
+    <div>Công dân nam đủ 17 tuổi trở lên có nghĩa vụ đăng ký nghĩa vụ quân sự. Công dân không thực hiện đăng ký sẽ bị xử phạt theo quy định của pháp luật.</div>
+  </div>
+
+  <!-- THỜI GIAN -->
+  <div class="content-card" id="thoi-gian">
+    <div class="card-header">
+      <span class="card-header-icon">⏰</span>
+      <h3>LỊCH TUYỂN QUÂN NĂM 2026</h3>
+    </div>
+    <div class="card-body">
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot">📋</div>
+          <div class="timeline-content">
+            <div class="timeline-date">Tháng 10 – 11/2025</div>
+            <div class="timeline-title">Rà soát, lập danh sách</div>
+            <div class="timeline-desc">Ban CHQS xã rà soát, lập danh sách công dân trong độ tuổi tuyển quân trên địa bàn</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">📞</div>
+          <div class="timeline-content">
+            <div class="timeline-date">Tháng 12/2025</div>
+            <div class="timeline-title">Gọi khám sức khỏe sơ tuyển</div>
+            <div class="timeline-desc">Công dân trong danh sách được triệu tập khám sức khỏe sơ tuyển tại trạm y tế xã</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">🏥</div>
+          <div class="timeline-content">
+            <div class="timeline-date">Tháng 01/2026</div>
+            <div class="timeline-title">Khám sức khỏe chính thức</div>
+            <div class="timeline-desc">Khám sức khỏe tập trung tại Hội đồng khám sức khỏe nghĩa vụ quân sự xã Bình Mỹ</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">📣</div>
+          <div class="timeline-content">
+            <div class="timeline-date">Tháng 02/2026</div>
+            <div class="timeline-title">Công bố danh sách gọi nhập ngũ</div>
+            <div class="timeline-desc">Công bố danh sách công dân được gọi nhập ngũ đợt 1 năm 2026</div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">🪖</div>
+          <div class="timeline-content">
+            <div class="timeline-date">Tháng 02/2026</div>
+            <div class="timeline-title">Giao quân nhập ngũ</div>
+            <div class="timeline-desc">Lễ giao nhận quân, công dân chính thức nhập ngũ thực hiện nghĩa vụ quân sự</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ĐIỀU KIỆN -->
+  <div class="content-card" id="dieu-kien">
+    <div class="card-header">
+      <span class="card-header-icon">✅</span>
+      <h3>ĐIỀU KIỆN TUYỂN QUÂN</h3>
+    </div>
+    <div class="card-body">
+      <ul class="info-list">
+        <li class="info-item">
+          <span class="info-item-icon">👤</span>
+          <div class="info-item-text">
+            <div class="info-item-label">Đối tượng</div>
+            <div class="info-item-value">Công dân nam trong độ tuổi từ 18 đến hết 25 tuổi. Trường hợp được tạm hoãn hoặc miễn gọi nhập ngũ thì đến hết 27 tuổi</div>
+          </div>
+        </li>
+        <li class="info-item">
+          <span class="info-item-icon">🏥</span>
+          <div class="info-item-text">
+            <div class="info-item-label">Sức khỏe</div>
+            <div class="info-item-value">Đạt tiêu chuẩn sức khỏe loại 1, 2, 3 theo quy định của Bộ Quốc phòng và Bộ Y tế. Chiều cao từ 1,60m trở lên, cân nặng từ 48kg trở lên</div>
+          </div>
+        </li>
+        <li class="info-item">
+          <span class="info-item-icon">📚</span>
+          <div class="info-item-text">
+            <div class="info-item-label">Học vấn</div>
+            <div class="info-item-value">Tốt nghiệp THCS trở lên. Ưu tiên công dân có trình độ THPT, Trung cấp, Cao đẳng, Đại học</div>
+          </div>
+        </li>
+        <li class="info-item">
+          <span class="info-item-icon">🚫</span>
+          <div class="info-item-text">
+            <div class="info-item-label">Tiêu chuẩn chính trị</div>
+            <div class="info-item-value">Không có tiền án, tiền sự. Không sử dụng ma túy. Có lý lịch gia đình rõ ràng, chấp hành tốt đường lối, chủ trương của Đảng và pháp luật Nhà nước</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- HỒ SƠ -->
+  <div class="content-card" id="ho-so">
+    <div class="card-header">
+      <span class="card-header-icon">📄</span>
+      <h3>HỒ SƠ CẦN CHUẨN BỊ</h3>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-info">
+        <span>ℹ️</span>
+        <div>Chuẩn bị đầy đủ hồ sơ trước khi đến nộp tại Ban CHQS Xã Bình Mỹ. Hồ sơ thiếu sẽ không được tiếp nhận.</div>
+      </div>
+      <ul class="checklist">
+        <li class="checklist-item"><div class="check-box">1</div><span>Căn cước công dân (bản photo công chứng)</span></li>
+        <li class="checklist-item"><div class="check-box">2</div><span>Giấy chứng nhận sức khỏe (do cơ sở y tế cấp, còn hiệu lực trong vòng 6 tháng)</span></li>
+        <li class="checklist-item"><div class="check-box">3</div><span>Kết quả xét nghiệm ma túy (test nhanh tại trạm y tế xã)</span></li>
+        <li class="checklist-item"><div class="check-box">4</div><span>Tờ khai lý lịch theo mẫu (nhận tại Ban CHQS xã)</span></li>
+        <li class="checklist-item"><div class="check-box">5</div><span>Bằng tốt nghiệp học vấn cao nhất (bản photo công chứng)</span></li>
+        <li class="checklist-item"><div class="check-box">6</div><span>Hộ khẩu thường trú hoặc giấy xác nhận cư trú (bản photo)</span></li>
+        <li class="checklist-item"><div class="check-box">7</div><span>02 ảnh thẻ 3x4cm (chụp không quá 6 tháng, nền trắng)</span></li>
+        <li class="checklist-item"><div class="check-box">8</div><span>Giấy tờ khác theo yêu cầu của Ban CHQS xã (nếu có)</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ĐỊA ĐIỂM & LIÊN HỆ -->
+  <div class="content-card">
+    <div class="card-header">
+      <span class="card-header-icon">📍</span>
+      <h3>ĐỊA ĐIỂM ĐĂNG KÝ & NỘP HỒ SƠ</h3>
+    </div>
+    <div class="card-body">
+      <ul class="info-list">
+        <li class="info-item">
+          <span class="info-item-icon">🏢</span>
+          <div class="info-item-text">
+            <div class="info-item-label">Đơn vị tiếp nhận</div>
+            <div class="info-item-value">Ban Chỉ huy Quân sự Xã Bình Mỹ, TP. Hồ Chí Minh</div>
+          </div>
+        </li>
+        <li class="info-item">
+          <span class="info-item-icon">🕐</span>
+          <div class="info-item-text">
+            <div class="info-item-label">Giờ làm việc</div>
+            <div class="info-item-value">Thứ Hai đến Thứ Sáu: 7:30 – 11:30 và 13:30 – 17:00</div>
+          </div>
+        </li>
+        <li class="info-item">
+          <span class="info-item-icon">📞</span>
+          <div class="info-item-text">
+            <div class="info-item-label">Liên hệ</div>
+            <div class="info-item-value">Zalo: 09875948.. | Facebook: <a href="https://www.facebook.com/share/18g8qhhaEB/?mibextid=wwXIfr" target="_blank" style="color:var(--red);">Ban CHQS Xã Bình Mỹ</a></div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FORM ĐĂNG KÝ -->
+  <div class="content-card" id="dang-ky">
+    <div class="card-header">
+      <span class="card-header-icon">📝</span>
+      <h3>ĐĂNG KÝ TRỰC TUYẾN</h3>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-info">
+        <span>ℹ️</span>
+        <div>Đăng ký online chỉ mang tính chất thông báo. Bạn vẫn cần đến Ban CHQS xã để nộp hồ sơ gốc theo lịch hẹn.</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Họ và tên khai sinh *</label>
+          <input type="text" class="form-control" id="f-hoten" placeholder="Nhập đầy đủ họ và tên">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Số CCCD *</label>
+          <input type="text" class="form-control" id="f-cccd" maxlength="12" inputmode="numeric"
+            placeholder="12 chữ số" oninput="this.value=this.value.replace(/\D/g,'')">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Ngày tháng năm sinh *</label>
+          <input type="date" class="form-control" id="f-dob">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Số điện thoại *</label>
+          <input type="tel" class="form-control" id="f-phone" placeholder="Số liên lạc">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Địa chỉ thường trú *</label>
+        <input type="text" class="form-control" id="f-addr" placeholder="Số nhà, ấp, xã Bình Mỹ...">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Trình độ học vấn</label>
+          <select class="form-control" id="f-edu">
+            <option value="">-- Chọn --</option>
+            <option>THCS</option>
+            <option>THPT</option>
+            <option>Trung cấp / CĐ</option>
+            <option>Đại học trở lên</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nghề nghiệp hiện tại</label>
+          <input type="text" class="form-control" id="f-job" placeholder="VD: Học sinh, Công nhân...">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Ghi chú thêm</label>
+        <textarea class="form-control" id="f-note" placeholder="Thông tin bổ sung (nếu có)..."></textarea>
+      </div>
+
+      <div class="err-msg" id="f-err" style="margin-bottom:10px;">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;flex-shrink:0;">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+        </svg>
+        <span id="f-err-text"></span>
+      </div>
+
+      <button class="btn-search" onclick="submitForm()">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:17px;height:17px;">
+          <path d="M5 13l4 4L19 7"/>
+        </svg>
+        Gửi đăng ký
+      </button>
+
+      <div class="success-msg" id="success-msg">
+        ✅ Đăng ký thành công! Ban CHQS xã sẽ liên hệ với bạn qua số điện thoại đã đăng ký để xác nhận lịch nộp hồ sơ.
+      </div>
+      <p class="form-note">* Thông tin bắt buộc. Dữ liệu đăng ký chỉ dùng cho mục đích quản lý tuyển quân của Ban CHQS Xã Bình Mỹ.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">Ban Chỉ huy Quân sự Xã Bình Mỹ · TP. Hồ Chí Minh</div>
+  <div class="footer">Liên hệ: zalo: 09875948.. |
+    <a href="https://www.facebook.com/share/18g8qhhaEB/?mibextid=wwXIfr" target="_blank" style="color:#572db4;">Facebook</a>
+  </div>
+  <div class="footer" style="margin-top:8px;">
+    <a href="index.html" style="color:var(--red);font-weight:600;text-decoration:none;">← Về trang tra cứu</a>
+  </div>
+
+</div>
+
+<script>
+function submitForm() {
+  const hoten = document.getElementById('f-hoten').value.trim();
+  const cccd  = document.getElementById('f-cccd').value.trim();
+  const dob   = document.getElementById('f-dob').value;
+  const phone = document.getElementById('f-phone').value.trim();
+  const addr  = document.getElementById('f-addr').value.trim();
+  const err   = document.getElementById('f-err');
+  const errTxt= document.getElementById('f-err-text');
+
+  err.style.display = 'none';
+
+  if (!hoten) { errTxt.textContent='Vui lòng nhập họ và tên.'; err.style.display='flex'; return; }
+  if (cccd.length !== 12) { errTxt.textContent='Số CCCD phải đủ 12 chữ số.'; err.style.display='flex'; return; }
+  if (!dob)   { errTxt.textContent='Vui lòng nhập ngày sinh.'; err.style.display='flex'; return; }
+  if (!phone) { errTxt.textContent='Vui lòng nhập số điện thoại.'; err.style.display='flex'; return; }
+  if (!addr)  { errTxt.textContent='Vui lòng nhập địa chỉ thường trú.'; err.style.display='flex'; return; }
+
+  // Giả lập gửi thành công
+  document.getElementById('success-msg').style.display = 'block';
+  document.querySelector('.btn-search').disabled = true;
+  document.querySelector('.btn-search').style.background = '#aaa';
+  window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 100, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
