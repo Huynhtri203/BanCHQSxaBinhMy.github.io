@@ -668,8 +668,8 @@
 </div>
 
 <script>
-function submitForm() {
-    const FORM_API = 'https://script.google.com/macros/s/AKfycbzKqZNlfsxmxy4_sWy15AL_3oJtAHXXnTGgIeEeklz65tnKta5pnD5unlz4wjaoaKHchQ/exec'; // url api app script
+async function submitForm() {
+  const FORM_API = 'https://script.google.com/macros/s/AKfycbxwOc9GgXX4TseUVxb8pEj40D6dx__iGMO6xBSfYP9_lnvyQ-PK_KuCnjVW6cMnIcf-/exec';
 
   const hoten  = document.getElementById('f-hoten').value.trim();
   const cccd   = document.getElementById('f-cccd').value.trim();
@@ -677,22 +677,50 @@ function submitForm() {
   const phone  = document.getElementById('f-phone').value.trim();
   const addr   = document.getElementById('f-addr').value.trim();
   const school = document.getElementById('f-school').value;
+  const score  = document.getElementById('f-score').value.trim();
+  const note   = document.getElementById('f-note').value.trim();
   const err    = document.getElementById('f-err');
   const errTxt = document.getElementById('f-err-text');
 
   err.style.display = 'none';
 
-  if (!hoten)              { errTxt.textContent = 'Vui lòng nhập họ và tên.'; err.style.display = 'flex'; return; }
-  if (cccd.length !== 12)  { errTxt.textContent = 'Số CCCD phải đủ 12 chữ số.'; err.style.display = 'flex'; return; }
-  if (!dob)                { errTxt.textContent = 'Vui lòng nhập ngày sinh.'; err.style.display = 'flex'; return; }
-  if (!phone)              { errTxt.textContent = 'Vui lòng nhập số điện thoại.'; err.style.display = 'flex'; return; }
-  if (!addr)               { errTxt.textContent = 'Vui lòng nhập địa chỉ thường trú.'; err.style.display = 'flex'; return; }
-  if (!school)             { errTxt.textContent = 'Vui lòng chọn trường muốn đăng ký.'; err.style.display = 'flex'; return; }
+  if (!hoten)             { errTxt.textContent = 'Vui lòng nhập họ và tên.'; err.style.display = 'flex'; return; }
+  if (cccd.length !== 12) { errTxt.textContent = 'Số CCCD phải đủ 12 chữ số.'; err.style.display = 'flex'; return; }
+  if (!dob)               { errTxt.textContent = 'Vui lòng nhập ngày sinh.'; err.style.display = 'flex'; return; }
+  if (!phone)             { errTxt.textContent = 'Vui lòng nhập số điện thoại.'; err.style.display = 'flex'; return; }
+  if (!addr)              { errTxt.textContent = 'Vui lòng nhập địa chỉ thường trú.'; err.style.display = 'flex'; return; }
+  if (!school)            { errTxt.textContent = 'Vui lòng chọn trường muốn đăng ký.'; err.style.display = 'flex'; return; }
 
-  document.getElementById('success-msg').style.display = 'block';
-  document.querySelector('.btn-navy').disabled = true;
-  document.querySelector('.btn-navy').style.background = '#aaa';
-  window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 100, behavior: 'smooth' });
+  // Đổi nút thành đang gửi
+  const btn = document.querySelector('.btn-navy');
+  btn.disabled = true;
+  btn.style.background = '#aaa';
+  btn.innerHTML = 'Đang gửi...';
+
+  try {
+    await fetch(FORM_API, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        loai:  'Tuyển sinh',
+        hoten, cccd, dob, phone, addr,
+        edu:   school,
+        job:   score,
+        note
+      })
+    });
+
+    document.getElementById('success-msg').style.display = 'block';
+    window.scrollTo({ top: document.getElementById('success-msg').offsetTop - 100, behavior: 'smooth' });
+
+  } catch(e) {
+    errTxt.textContent = 'Gửi thất bại. Vui lòng thử lại!';
+    err.style.display = 'flex';
+    btn.disabled = false;
+    btn.style.background = '';
+    btn.innerHTML = `<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:17px;height:17px;"><path d="M5 13l4 4L19 7"/></svg> Gửi đăng ký sơ tuyển`;
+  }
 }
 </script>
 </body>
