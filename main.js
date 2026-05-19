@@ -1,7 +1,7 @@
 // ===========================
 // CẤU HÌNH API
 // ===========================
-const API_URL = 'https://script.google.com/macros/s/AKfycbzmZ67ekh0WAsCCTKLQjj_AfKBEgxx660217rgoFSt1iOlOGb3NbrS9PXRbrdvCw0hgXA/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzKqZNlfsxmxy4_sWy15AL_3oJtAHXXnTGgIeEeklz65tnKta5pnD5unlz4wjaoaKHchQ/exec';
 
 // ===========================
 // HÀM TIỆN ÍCH
