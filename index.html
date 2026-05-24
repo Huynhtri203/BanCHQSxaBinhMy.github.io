@@ -3,194 +3,1551 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tra cứu thông tin Công dân - Xã Bình Mỹ</title>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Ban CHQS Xã Bình Mỹ</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<style>
+  /* ======= SLIDER ======= */
+  .slider-wrap {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+    background: #111;
+  }
+  .slider-track {
+    display: flex;
+    transition: transform .4s ease;
+  }
+  .slide {
+    min-width: 100%;
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .slide-placeholder {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #2a0a0a, var(--red-dark));
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+  }
+  .slide-placeholder span { font-size: 40px; }
+  .slide-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: #fff;
+    font-size: 13px; font-weight: 600;
+    padding: 24px 16px 12px;
+  }
+  .slider-btn {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    background: rgba(0,0,0,0.45);
+    border: none;
+    color: #fff;
+    font-size: 26px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+    z-index: 10;
+    line-height: 1;
+    padding: 0;
+  }
+  .slider-btn:hover { background: rgba(0,0,0,0.7); }
+  .slider-prev { left: 10px; }
+  .slider-next { right: 10px; }
+  .slider-dots {
+    position: absolute;
+    bottom: 10px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 6px;
+    z-index: 10;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all .2s;
+    border: none;
+  }
+  .dot.active {
+    background: #fff;
+    width: 22px;
+    border-radius: 4px;
+  }
+  @media (max-width: 520px) {
+    .slide { height: 180px; }
+  }
+
+  /* ======= HERO ======= */
+  .hero {
+    width: 100%;
+    background: linear-gradient(135deg, #6B0F0F 0%, var(--red-dark) 40%, #A93226 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    position: relative;
+  }
+  .hero-logo {
+    width: 80px; height: 80px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  }
+  .hero-text h1 {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    margin-bottom: 6px;
+  }
+  .hero-text h2 {
+    font-size: 22px; font-weight: 800;
+    color: #fff;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+  .hero-text p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.5;
+  }
+  .hero-gold-line {
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--gold) 0%, #F0C040 50%, var(--gold) 100%);
+  }
+
+  /* ======= NAV TABS ======= */
+  .main-nav {
+    width: 100%;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .main-nav-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .main-nav-inner::-webkit-scrollbar { display: none; }
+  .nav-item {
+    flex-shrink: 0;
+    padding: 14px 16px;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+    cursor: pointer;
+    white-space: nowrap;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    font-family: inherit;
+  }
+  .nav-item:hover { color: var(--red); }
+  .nav-item.active {
+    color: var(--red);
+    border-bottom-color: var(--red);
+  }
+
+  /* ======= LANG TOGGLE BUTTON ======= */
+  .lang-btn {
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+    border: 1.5px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+  .lang-btn:hover {
+    background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1));
+    border-color: rgba(255,255,255,0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+  }
+  .lang-btn:active { transform: scale(0.95); }
+
+  /* ======= CONTAINER ======= */
+  .main-container {
+    width: 100%;
+    max-width: 760px;
+    margin: 24px auto;
+    padding: 0 16px 48px;
+  }
+
+  /* ======= SECTIONS ======= */
+  .section-page { display: none; }
+  .section-page.active { display: block; animation: fadeUp .3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ======= CARD ======= */
+  .card {
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .card-head {
+    background: linear-gradient(90deg, var(--red-dark), var(--red));
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-head h3 { font-size: 14px; font-weight: 700; color: #fff; }
+  .card-head span { font-size: 18px; }
+  .card-body { padding: 20px; }
+
+  /* ======= TRANG CHỦ ======= */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 12px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .stat-icon { font-size: 28px; margin-bottom: 6px; }
+  .stat-num {
+    font-size: 22px; font-weight: 800;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+
+  /* QUICK LINKS */
+  .quick-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .quick-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 13px; font-weight: 600;
+    box-shadow: var(--shadow);
+    transition: all .2s;
+    cursor: pointer;
+  }
+  .quick-link:hover {
+    border-color: var(--red);
+    color: var(--red);
+    transform: translateY(-1px);
+  }
+  .quick-link-icon { font-size: 22px; flex-shrink: 0; }
+
+  /* ======= HOẠT ĐỘNG SLIDER ======= */
+  .act-slider-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .act-slider-header {
+    background: linear-gradient(90deg, var(--red-dark), var(--red));
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .act-slider-icon { font-size: 22px; flex-shrink: 0; }
+  .act-slider-title { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .act-slider-sub   { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .act-counter {
+    margin-left: auto;
+    font-size: 12px; font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.15);
+    padding: 4px 10px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .act-track-wrap { position: relative; overflow: hidden; }
+  .act-track { display: flex; transition: transform .4s cubic-bezier(.4,0,.2,1); }
+  .act-slide { min-width: 100%; flex-shrink: 0; display: flex; }
+
+  .act-img-wrap {
+    width: 260px; min-width: 260px; height: 190px;
+    position: relative; overflow: hidden; flex-shrink: 0;
+  }
+  .act-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .act-img-ph {
+    display: none; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #3a0a0a, var(--red-dark));
+    align-items: center; justify-content: center; font-size: 40px;
+  }
+  .act-info {
+    flex: 1; padding: 14px 16px;
+    display: flex; flex-direction: column; justify-content: center; gap: 6px;
+  }
+  .act-tag {
+    display: inline-flex; align-self: flex-start;
+    font-size: 10px; font-weight: 700;
+    padding: 3px 9px; border-radius: 20px;
+    background: var(--red-light); color: var(--red);
+    text-transform: uppercase; letter-spacing: .05em;
+  }
+  .act-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.4; }
+  .act-date { font-size: 11px; color: var(--text-muted); }
+
+  .act-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(0,0,0,0.35); border: none; color: #fff;
+    font-size: 22px; width: 32px; height: 32px;
+    border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 5; transition: background .2s; padding: 0; line-height: 1;
+  }
+  .act-btn:hover { background: rgba(0,0,0,0.6); }
+  .act-prev { left: 8px; }
+  .act-next { right: 8px; }
+
+  .act-dots {
+    display: flex; justify-content: center; gap: 6px;
+    padding: 10px 0 12px;
+    background: var(--surface-alt);
+    border-top: 1px solid var(--border);
+  }
+  .act-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--border); cursor: pointer; border: none; transition: all .2s;
+  }
+  .act-dot.active { background: var(--red); width: 20px; border-radius: 4px; }
+
+    /* BANNER TIN TỨC ở dưới kích cỡ */
+
+  @media (max-width: 720px) {
+    .act-img-wrap { width: 180px; min-width: 180px; height: 150px; }
+    .act-name { font-size: 14px; }
+  }
+
+  /* BANNER TIN TỨC */
+  .news-banner {
+    background: linear-gradient(135deg, var(--red-dark), var(--red));
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 14px;
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .news-banner:hover { opacity: .92; }
+  .news-banner-icon { font-size: 32px; flex-shrink: 0; }
+
+  .icon-box {
+    width: 44px; height: 44px; min-width: 44px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden; flex-shrink: 0;
+  }
+  .icon-box img { width: 24px; height: 24px; object-fit: contain; }
+  .icon-box .icon-fallback { font-size: 20px; }
+
+  .news-banner-text h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .news-banner-text p  { font-size: 12px; color: rgba(255,255,255,0.75); }
+  .news-banner-arrow   { margin-left: auto; font-size: 20px; color: rgba(255,255,255,0.6); flex-shrink: 0; }
+
+  /* ======= GIỚI THIỆU ======= */
+  .intro-block {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .intro-block:last-child { border-bottom: none; }
+  .intro-block h4 {
+    font-size: 14px; font-weight: 700;
+    color: var(--red); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .intro-block p {
+    font-size: 14px; color: var(--text); line-height: 1.7; text-align: justify;
+  }
+
+  /* PLACEHOLDER ẢNH */
+  .img-placeholder {
+    width: 100%; height: 180px;
+    background: linear-gradient(135deg, #f0ede8, #e8e4dc);
+    border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    margin: 12px 0;
+    border: 2px dashed var(--border);
+    color: var(--text-muted); font-size: 13px; gap: 8px;
+  }
+  .img-placeholder span { font-size: 36px; }
+
+  /* CƠ CẤU */
+  .org-chart { display: flex; flex-direction: column; gap: 8px; }
+  .org-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface-alt);
+    border-radius: 8px;
+    border-left: 4px solid var(--red);
+  }
+  .org-item.sub { margin-left: 24px; border-left-color: var(--gold); border-left-width: 3px; }
+  .org-icon  { font-size: 20px; flex-shrink: 0; }
+  .org-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .org-name  { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* CHỨC NĂNG NHIỆM VỤ */
+  .duty-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .duty-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--surface-alt);
+    border-radius: 8px; border: 1px solid var(--border);
+  }
+  .duty-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--red); color: #fff;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .duty-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+
+  /* ======= TIN TỨC ======= */
+  .news-list { display: flex; flex-direction: column; gap: 14px; }
+  .news-item {
+    display: flex; gap: 14px; padding: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; cursor: pointer;
+    transition: all .2s; box-shadow: var(--shadow);
+  }
+  .news-item:hover { border-color: var(--red); transform: translateY(-1px); }
+  .news-thumb {
+    width: 80px; height: 70px; border-radius: 8px;
+    background: linear-gradient(135deg, #f0ede8, #e0dbd2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; flex-shrink: 0;
+  }
+  .news-content { flex: 1; }
+  .news-cat {
+    display: inline-block; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px;
+    background: var(--red-light); color: var(--red);
+    text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px;
+  }
+  .news-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 4px; }
+  .news-date  { font-size: 11px; color: var(--text-muted); }
+
+  /* NEWS MODAL */
+  .news-modal {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 999;
+    padding: 16px; overflow-y: auto;
+  }
+  .news-modal.open { display: flex; align-items: flex-start; justify-content: center; }
+  .news-modal-box {
+    background: var(--surface); border-radius: 14px;
+    max-width: 700px; width: 100%; margin-top: 20px;
+    overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: fadeUp .25s ease;
+  }
+  .news-modal-head {
+    background: linear-gradient(90deg, var(--red-dark), var(--red));
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .news-modal-head h3 { font-size: 14px; font-weight: 700; color: #fff; flex: 1; }
+  .close-btn {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); border: none; color: #fff;
+    font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-left: 12px;
+  }
+  .news-modal-body { padding: 20px; }
+  .news-modal-body .img-placeholder { height: 160px; }
+  .news-modal-body p {
+    font-size: 14px; color: var(--text); line-height: 1.8;
+    text-align: justify; margin-top: 14px;
+  }
+
+  /* ======= THANH TÌM KIẾM ======= */
+  .search-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5); z-index: 200;
+    padding: 80px 16px 16px; animation: fadeIn .2s ease;
+  }
+  .search-overlay.open { display: block; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .search-box {
+    max-width: 700px; margin: 0 auto;
+    background: var(--surface); border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden; animation: slideDown .25s ease;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .search-input-wrap {
+    display: flex; align-items: center; padding: 14px 16px; gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-input-wrap input {
+    flex: 1; border: none; outline: none;
+    font-family: inherit; font-size: 16px;
+    color: var(--text); background: transparent;
+  }
+  .search-input-wrap input::placeholder { color: var(--placeholder-color); }
+  .search-close-btn {
+    background: none; border: none; font-size: 20px; cursor: pointer;
+    color: var(--text-muted); padding: 4px; flex-shrink: 0;
+  }
+  .search-icon-btn { font-size: 20px; flex-shrink: 0; color: var(--red); }
+  .search-results { max-height: 400px; overflow-y: auto; padding: 8px 0; }
+  .search-empty { padding: 32px 16px; text-align: center; color: var(--text-muted); font-size: 14px; }
+  .search-result-item {
+    display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px;
+    cursor: pointer; transition: background .15s; border-bottom: 1px solid var(--border);
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover { background: var(--surface-alt); }
+  .search-result-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .search-result-cat { font-size: 10px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
+  .search-result-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .search-result-title mark { background: #FEF9E7; color: var(--red); border-radius: 2px; padding: 0 2px; font-weight: 700; }
+  .search-result-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+  .search-hint { padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px; }
+
+  /* ======= HỎI ĐÁP ======= */
+  .faq-list { display: flex; flex-direction: column; gap: 8px; }
+  .faq-item { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .faq-question {
+    width: 100%; padding: 14px 16px; background: var(--surface-alt);
+    border: none; text-align: left; font-family: inherit;
+    font-size: 14px; font-weight: 600; color: var(--text);
+    cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    transition: background .2s;
+  }
+  .faq-question:hover { background: var(--red-light); }
+  .faq-question.open  { background: var(--red-light); color: var(--red); }
+  .faq-arrow { font-size: 16px; flex-shrink: 0; transition: transform .2s; }
+  .faq-question.open .faq-arrow { transform: rotate(180deg); }
+  .faq-answer {
+    display: none; padding: 14px 16px; background: var(--surface);
+    font-size: 14px; color: var(--text); line-height: 1.7;
+    border-top: 1px solid var(--border);
+  }
+  .faq-answer.open { display: block; }
+
+  /* ======= LIÊN HỆ ======= */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .contact-item {
+    display: flex; gap: 12px; align-items: flex-start; padding: 14px;
+    background: var(--surface-alt); border-radius: 8px; border: 1px solid var(--border);
+  }
+  .contact-icon { font-size: 22px; flex-shrink: 0; }
+  .contact-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 3px; }
+  .contact-value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+  /* FORM LIÊN HỆ */
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .form-control {
+    width: 100%; height: 46px; border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 0 14px; font-family: inherit; font-size: 14px; color: var(--text);
+    outline: none; background: #FAFAF8; transition: border-color .2s;
+  }
+  .form-control:focus { border-color: var(--red); background: #fff; }
+  .form-control::placeholder { color: #bbb; font-weight: 400; }
+  textarea.form-control { height: auto; padding: 10px 14px; resize: vertical; min-height: 90px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* FOOTER TRANG */
+  .site-footer { width: 100%; background: var(--red-dark); padding: 24px 16px; margin-top: 20px; }
+  .site-footer-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+  .site-footer h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .site-footer p  { font-size: 12px; color: rgba(255,255,255,0.65); margin-bottom: 4px; }
+  .site-footer-links { display: flex; justify-content: center; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+  .site-footer-links a { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-decoration: none; transition: color .2s; }
+  .site-footer-links a:hover { color: var(--gold); }
+
+  /* SUCCESS MSG */
+  .success-msg {
+    display: none; background: #D5F5E3; border: 1px solid #A9DFBF;
+    border-radius: 8px; padding: 14px; text-align: center;
+    color: #1E8449; font-size: 14px; font-weight: 600; margin-top: 12px;
+  }
+
+  @media (max-width: 520px) {
+    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .quick-links { grid-template-columns: 1fr 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .hero-text h2 { font-size: 18px; }
+    .hero-logo { width: 60px; height: 60px; }
+    .act-img-wrap { width: 160px; min-width: 160px; height: 120px; }
+  }
+</style>
 </head>
-<body>
+<body style="padding:0;align-items:stretch;">
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-inner">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Emblem_of_Vietnam.svg"
-         style="width:52px;height:52px;object-fit:contain;flex-shrink:0;">
-    <div class="header-text">
-      <h1>HỆ THỐNG TRA CỨU THÔNG TIN CÔNG DÂN TUỔI 17</h1>
-      <p>Nhập số Căn cước công dân và Họ tên để xem thông tin cá nhân</p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <img class="hero-logo"
+         src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Emblem_of_Vietnam.svg"
+         alt="Quốc huy Việt Nam">
+    <div class="hero-text">
+      <h1 data-i18n="hero.subtitle">Ban Chỉ huy Quân sự · Xã Bình Mỹ TP.HCM</h1>
+      <h2 data-i18n="hero.title">CỔNG THÔNG TIN ĐIỆN TỬ</h2>
+      <p data-i18n="hero.desc">Phục vụ nhân dân — Bảo vệ Tổ quốc — Xây dựng lực lượng vũ trang vững mạnh</p>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button id="lang-toggle-btn" class="lang-btn" onclick="toggleLang()" title="Đổi ngôn ngữ">🇬🇧 EN</button>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Chuyển chế độ sáng/tối">🌙</button>
     </div>
   </div>
 </div>
-<div class="stripe"></div>
-  <!-- NAV TABS -->
-<div style="width:100%;background:var(--surface);border-bottom:1px solid var(--border);">
-  <div style="max-width:760px;margin:0 auto;display:flex;">
-    <a href="tuyen-quan.html" style="flex:1;padding:14px 12px;text-align:center;font-size:13px;font-weight:600;color:#6B6B6B;text-decoration:none;border-bottom:3px solid transparent;">🪖 Tuyển Quân</a>
-    <a href="tuyen-sinh.html" style="flex:1;padding:14px 12px;text-align:center;font-size:13px;font-weight:600;color:#6B6B6B;text-decoration:none;border-bottom:3px solid transparent;">🎓 Tuyển Sinh</a>
-    <a href="index.html" style="flex:1;padding:14px 12px;text-align:center;font-size:13px;font-weight:600;color:#C0392B;text-decoration:none;border-bottom:3px solid #C0392B;">🔍 Tra Cứu</a>
+<div class="hero-gold-line"></div>
+
+<!-- NAV CHÍNH -->
+<div class="main-nav">
+  <div class="main-nav-inner" style="border-bottom:1px solid var(--border);">
+    <button class="nav-item active" onclick="showSection('home', this)" data-i18n="nav.home">🏠 Trang chủ</button>
+    <button class="nav-item" onclick="showSection('gioithieu', this)" data-i18n="nav.intro">📋 Giới thiệu</button>
+    <button class="nav-item" onclick="showSection('tintuc', this)" data-i18n="nav.news">📰 Tin tức</button>
+    <button class="nav-item" onclick="showSection('hoidap', this)" data-i18n="nav.faq">❓ Hỏi đáp</button>
+    <button class="nav-item" onclick="showSection('lienhe', this)" data-i18n="nav.contact">📞 Liên hệ</button>
+    <button class="nav-item" onclick="openSearch()" title="Tìm kiếm (Ctrl+K)"
+      style="margin-left:auto;font-size:18px;padding:10px 16px;color:var(--red);">🔎</button>
+  </div>
+  <div class="main-nav-inner" style="background:#FAFAF8;">
+    <button class="nav-item" onclick="window.location.href='tracuu.html'"
+      style="font-size:12px;padding:9px 14px;" data-i18n="nav.lookup">🔍 Tra cứu CCCD</button>
+    <button class="nav-item" onclick="window.location.href='tuyen-quan.html'"
+      style="font-size:12px;padding:9px 14px;" data-i18n="nav.recruit">🪖 Tuyển quân</button>
+    <button class="nav-item" onclick="window.location.href='tuyen-sinh.html'"
+      style="font-size:12px;padding:9px 14px;" data-i18n="nav.edu">🎓 Tuyển sinh</button>
   </div>
 </div>
 
-<!-- NỘI DUNG CHÍNH -->
-<div class="container">
-
-  <!-- FORM TÌM KIẾM -->
-  <div class="search-card">
-    <span class="search-label">Số Căn cước công dân (CCCD)</span>
-    <input class="field-input" type="text" id="inp" maxlength="12" inputmode="numeric"
-      placeholder="Nhập 12 số CCCD..."
-      oninput="this.value=this.value.replace(/\D/g,'')"
-      onkeydown="if(event.key==='Enter')lookup()">
-
-    <span class="search-label" style="margin-top:14px">Họ và tên</span>
-    <input class="field-input" type="text" id="inp-hoten"
-      placeholder="Nhập đúng họ và tên khai sinh..."
-      onkeydown="if(event.key==='Enter')lookup()">
-
-    <!-- reCAPTCHA v2 -->
-    <div class="recaptcha-wrap">
-      <div class="g-recaptcha" data-sitekey="6LdAX-wsAAAAAKHaaJEpFfQxuYBvpOKXAVioOvzQ"></div>
+<!-- OVERLAY TÌM KIẾM -->
+<div class="search-overlay" id="search-overlay" onclick="closeSearchOverlay(event)">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon-btn">🔎</span>
+      <input type="text" id="search-input"
+        data-i18n-ph="search.placeholder"
+        placeholder="Tìm kiếm tin tức, hỏi đáp, giới thiệu..."
+        oninput="doSearch(this.value)"
+        onkeydown="if(event.key==='Escape')closeSearch()">
+      <button class="search-close-btn" onclick="closeSearch()">✕</button>
     </div>
-
-    <button class="btn-search" onclick="lookup()">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      Tra cứu
-    </button>
-
-    <div class="err-msg" id="err">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
-      </svg>
-      <span id="err-text"></span>
-    </div>
-    <p class="hint">Phải nhập đúng số CCCD, họ tên và xác nhận không phải robot mới tra cứu được</p>
-  </div>
-
-  <!-- LOADING -->
-  <div class="loading" id="loading">
-    <div class="spinner"></div>
-    Đang tra cứu dữ liệu...
-  </div>
-
-  <!-- KẾT QUẢ -->
-  <div class="result-card" id="result">
-    <div class="result-header">
-      <div class="avatar" id="r-avatar">?</div>
-      <div class="result-header-text">
-        <h2 id="r-name">—</h2>
-        <p id="r-cccd-disp">—</p>
-      </div>
-    </div>
-    <div class="result-body">
-
-      <div class="section">
-        <div class="section-title">Thông tin cơ bản</div>
-        <div class="fields-grid">
-          <div class="field">
-            <span class="field-label">STT</span>
-            <span class="field-value"><span class="stt-badge" id="r-stt">—</span></span>
-          </div>
-          <div class="field">
-            <span class="field-label">Số Giấy chứng nhận</span>
-            <span class="field-value" id="r-gcn">—</span>
-          </div>
-          <div class="field">
-            <span class="field-label">Số CCCD</span>
-            <span class="field-value big" id="r-cccd">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Họ tên &amp; Ngày sinh</div>
-        <div class="fields-grid full">
-          <div class="field">
-            <span class="field-label">Họ, chữ đệm tên khai sinh / thường dùng / Ngày sinh / Số CCCD</span>
-            <span class="field-value" id="r-hoten">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Trình độ học vấn</div>
-        <div class="fields-grid full">
-          <div class="field">
-            <span class="field-label">Trình độ văn hóa / Tốt nghiệp phổ thông / Đang học</span>
-            <span class="field-value" id="r-trinhdoVH">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Nơi cư trú &amp; làm việc</div>
-        <div class="fields-grid full">
-          <div class="field">
-            <span class="field-label">Nơi thường trú / Nơi ở hiện nay / Nơi làm việc / Nơi đăng ký NVQS</span>
-            <span class="field-value" id="r-noicu">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Thành phần &amp; Dân tộc</div>
-        <div class="fields-grid full">
-          <div class="field">
-            <span class="field-label">Thành phần gia đình / Bản thân / Dân tộc / Tôn giáo</span>
-            <span class="field-value" id="r-thanhphan">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Trình độ chuyên môn &amp; Gia đình</div>
-        <div class="fields-grid full">
-          <div class="field">
-            <span class="field-label">Trình độ CMKT / Anh chị em ruột / Con thứ</span>
-            <span class="field-value" id="r-cmkt">—</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-title">Thông tin cha mẹ</div>
-        <div class="fields-grid full">
-          <div class="field">
-            <span class="field-label">Họ tên cha / mẹ, năm sinh, nghề nghiệp, liệt sĩ...</span>
-            <span class="field-value" id="r-chame">—</span>
-          </div>
-        </div>
-      </div>
-
+    <div class="search-results" id="search-results">
+      <div class="search-hint" data-i18n="search.hint">Nhập từ khóa để tìm kiếm nội dung trang...</div>
     </div>
   </div>
-
-  <!-- FOOTER -->
-  <div class="footer">Hệ thống tra cứu nội bộ · Chỉ hiển thị thông tin của cá nhân tra cứu</div>
-  <div class="footer">Liên hệ thắc mắc: zalo: 09875948..@ByTri</div>
-  <div class="footer">Mọi thắc mắc liên hệ:
-    <a href="https://www.facebook.com/share/18g8qhhaEB/?mibextid=wwXIfr" target="_blank" style="color:#572db4;">Facebook</a>
-  </div>
-
-  <!-- QR CODE -->
-  <div style="text-align:center;margin-top:24px;">
-    <p style="font-size:12px;color:#aaa;margin-bottom:10px;">Quét mã QR để truy cập</p>
-    <div id="qrcode" style="display:inline-block;padding:10px;background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1);"></div>
-  </div>
-
 </div>
 
-<!-- SCRIPTS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<div class="main-container">
+
+  <!-- ===== TRANG CHỦ ===== -->
+  <div id="sec-home" class="section-page active">
+
+    <!-- SLIDER ẢNH -->
+    <div class="slider-wrap">
+      <div class="slider-track" id="slider-track">
+        <div class="slide">
+          <img src="images/anh1.jpg" alt="Ảnh hoạt động 1"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="slide-placeholder"><span>🖼️</span>Ảnh 1 — thay bằng ảnh thực</div>
+          <div class="slide-caption" data-i18n="slide.1">Lễ giao quân Nghĩa vụ Quân sự năm 2026</div>
+        </div>
+        <div class="slide">
+          <img src="images/anh2.jpg" alt="Ảnh hoạt động 2"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="slide-placeholder"><span>🖼️</span>Ảnh 2 — thay bằng ảnh thực</div>
+          <div class="slide-caption" data-i18n="slide.2">Hội thao Quốc phòng năm 2026</div>
+        </div>
+        <div class="slide">
+          <img src="images/anh3.jpg" alt="Ảnh hoạt động 3"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="slide-placeholder"><span>🖼️</span>Ảnh 3 — thay bằng ảnh thực</div>
+          <div class="slide-caption" data-i18n="slide.3">Huấn luyện Dân quân tự vệ năm 2026</div>
+        </div>
+      </div>
+      <button class="slider-btn slider-prev" onclick="slideMove(-1)">‹</button>
+      <button class="slider-btn slider-next" onclick="slideMove(1)">›</button>
+      <div class="slider-dots">
+        <span class="dot active" onclick="slideTo(0)"></span>
+        <span class="dot" onclick="slideTo(1)"></span>
+        <span class="dot" onclick="slideTo(2)"></span>
+      </div>
+    </div>
+
+    <!-- THỐNG KÊ -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-icon">🪖</div>
+        <div class="stat-num">400+</div>
+        <div class="stat-label" data-i18n="stat.citizens">Công dân tuổi 17</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🛡️</div>
+        <div class="stat-num">25+</div>
+        <div class="stat-label" data-i18n="stat.founded">Năm thành lập</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-num">100%</div>
+        <div class="stat-label" data-i18n="stat.complete">Hoàn thành chỉ tiêu</div>
+      </div>
+    </div>
+
+
+    <div class="quick-links">
+      <div class="quick-link" onclick="window.location.href='index.html'" data-i18n="ql.lookup">
+        <span class="quick-link-icon">🔍</span> Tra cứu thông tin cá nhân
+      </div>
+      <div class="quick-link" onclick="window.location.href='tuyen-quan.html'" data-i18n="ql.recruit">
+        <span class="quick-link-icon">🪖</span> Đăng ký tuyển quân
+      </div>
+      <div class="quick-link" onclick="window.location.href='tuyen-sinh.html'" data-i18n="ql.edu">
+        <span class="quick-link-icon">🎓</span> Đăng ký tuyển sinh
+      </div>
+      <div class="quick-link" onclick="showSection('lienhe')" data-i18n="ql.contact">
+        <span class="quick-link-icon">📞</span> Liên hệ Ban CHQS
+      </div>
+    </div>
+
+    <!-- TIN TỨC NỔI BẬT -->
+    <div class="card">
+      <div class="card-head">
+        <span>📰</span>
+        <h3 data-i18n="home.news.title">TIN TỨC NỔI BẬT</h3>
+      </div>
+      <div class="card-body" style="padding:14px;">
+        <div class="news-banner" onclick="openNews(0)">
+          <span class="news-banner-icon">🪖</span>
+          <div class="news-banner-text">
+            <h4 data-i18n="home.news.banner1.title">Lễ giao quân Nghĩa vụ Quân sự năm 2026</h4>
+            <p data-i18n="home.news.banner1.meta">Tháng 02/2026 · Ban CHQS Xã Bình Mỹ</p>
+          </div>
+          <span class="news-banner-arrow">›</span>
+        </div>
+        <div class="news-banner" onclick="openNews(1)" style="background:linear-gradient(135deg,#7D6608,#B7950B);">
+          <span class="news-banner-icon">🏋️</span>
+          <div class="news-banner-text">
+            <h4 data-i18n="home.news.banner2.title">Hội thao Quốc phòng năm 2026</h4>
+            <p data-i18n="home.news.banner2.meta">Tháng 11/2026 · Đạt giải Nhì toàn đoàn</p>
+          </div>
+          <span class="news-banner-arrow">›</span>
+        </div>
+        <div style="text-align:center;margin-top:10px;">
+          <button onclick="showSection('tintuc')" style="background:none;border:1.5px solid var(--red);color:var(--red);padding:8px 20px;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;"
+            data-i18n="home.news.viewall">Xem tất cả tin tức →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOẠT ĐỘNG NỔI BẬT -->
+    <div class="act-slider-wrap">
+      <div class="act-slider-header">
+        <span class="act-slider-icon">🎖️</span>
+        <div>
+          <div class="act-slider-title" data-i18n="act.title">HOẠT ĐỘNG NỔI BẬT</div>
+          <div class="act-slider-sub" data-i18n="act.sub">Ban Chỉ huy Quân sự Xã Bình Mỹ</div>
+        </div>
+        <div class="act-counter"><span id="act-cur">1</span> / <span id="act-total">5</span></div>
+      </div>
+
+      <div class="act-track-wrap">
+        <div class="act-track" id="act-track">
+
+          <!-- SLIDE 1 -->
+          <div class="act-slide">
+            <div class="act-img-wrap">
+              <img src="images/danquannam1.jpg" alt="Hoạt động 1"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="act-img-ph"><span>🪖</span></div>
+            </div>
+            <div class="act-info">
+              <div class="act-tag" data-i18n="act.tag.1">Giao quân NVQS</div>
+              <div class="act-name" data-i18n="act.name.1">Lễ giao nhận quân Nghĩa vụ Quân sự năm 2026</div>
+              <div class="act-date" data-i18n="act.date.1">📅 Tháng 02/2026</div>
+            </div>
+          </div>
+
+          <!-- SLIDE 2 -->
+          <div class="act-slide">
+            <div class="act-img-wrap">
+              <img src="images/vo.jpg" alt="Hoạt động 2"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="act-img-ph"><span>🏋️</span></div>
+            </div>
+            <div class="act-info">
+              <div class="act-tag" data-i18n="act.tag.2">Hội thao Quốc phòng</div>
+              <div class="act-name" data-i18n="act.name.2">Hội thao Quốc phòng năm 2026 — Giải Nhì toàn đoàn</div>
+              <div class="act-date" data-i18n="act.date.2">📅 Tháng 11/2025</div>
+            </div>
+          </div>
+
+          <!-- SLIDE 3 -->
+          <div class="act-slide">
+            <div class="act-img-wrap">
+              <img src="images/vo1.jpg" alt="Hoạt động 3"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="act-img-ph"><span>🏃</span></div>
+            </div>
+            <div class="act-info">
+              <div class="act-tag" data-i18n="act.tag.3">Huấn luyện Dân quân</div>
+              <div class="act-name" data-i18n="act.name.3">Huấn luyện Dân quân tự vệ năm 2025 — 100% hoàn thành</div>
+              <div class="act-date" data-i18n="act.date.3">📅 Tháng 10/2025</div>
+            </div>
+          </div>
+
+          <!-- SLIDE 4 -->
+          <div class="act-slide">
+            <div class="act-img-wrap">
+              <img src="images/chatbot.jpg" alt="Hoạt động 4"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="act-img-ph"><span>🛡️</span></div>
+            </div>
+            <div class="act-info">
+              <div class="act-tag" data-i18n="act.tag.4">Trực SSCĐ</div>
+              <div class="act-name" data-i18n="act.name.4">Trực sẵn sàng chiến đấu 24/7 dịp Tết Nguyên Đán 2026</div>
+              <div class="act-date" data-i18n="act.date.4">📅 Tháng 01/2026</div>
+            </div>
+          </div>
+
+          <!-- SLIDE 5 -->
+          <div class="act-slide">
+            <div class="act-img-wrap">
+              <img src="images/vo.jpg" alt="Hoạt động 5"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="act-img-ph"><span>📣</span></div>
+            </div>
+            <div class="act-info">
+              <div class="act-tag" data-i18n="act.tag.5">Tuyên truyền NVQS</div>
+              <div class="act-name" data-i18n="act.name.5">Tuyên truyền Luật Nghĩa vụ Quân sự tại 6 ấp xã Bình Mỹ</div>
+              <div class="act-date" data-i18n="act.date.5">📅 Tháng 12/2025</div>
+            </div>
+          </div>
+
+        </div><!-- end act-track -->
+
+        <button class="act-btn act-prev" onclick="actMove(-1)">‹</button>
+        <button class="act-btn act-next" onclick="actMove(1)">›</button>
+      </div><!-- end act-track-wrap -->
+
+      <!-- DOTS -->
+      <div class="act-dots">
+        <span class="act-dot active" onclick="actTo(0)"></span>
+        <span class="act-dot" onclick="actTo(1)"></span>
+        <span class="act-dot" onclick="actTo(2)"></span>
+        <span class="act-dot" onclick="actTo(3)"></span>
+        <span class="act-dot" onclick="actTo(4)"></span>
+      </div>
+    </div>
+
+    <!-- THÔNG BÁO -->
+    <div class="card">
+      <div class="card-head">
+        <span>📢</span>
+        <h3 data-i18n="home.notice.title">THÔNG BÁO MỚI NHẤT</h3>
+      </div>
+      <div class="card-body" style="padding:14px 20px;">
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li style="display:flex;gap:10px;align-items:flex-start;padding-bottom:10px;border-bottom:1px solid var(--border);">
+            <span style="font-size:16px;flex-shrink:0;margin-top:1px;">📋</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);" data-i18n="home.notice.1">Triệu tập đăng ký nghĩa vụ quân sự năm 2026</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">05/01/2026</div>
+            </div>
+          </li>
+          <li style="display:flex;gap:10px;align-items:flex-start;padding-bottom:10px;border-bottom:1px solid var(--border);">
+            <span style="font-size:16px;flex-shrink:0;margin-top:1px;">🏥</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);" data-i18n="home.notice.2">Lịch khám sức khỏe tuyển sinh trường quân đội năm 2026</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">10/01/2026</div>
+            </div>
+          </li>
+          <li style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="font-size:16px;flex-shrink:0;margin-top:1px;">📣</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);" data-i18n="home.notice.3">Tuyên truyền Luật Nghĩa vụ Quân sự tại các ấp</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">15/12/2025</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== GIỚI THIỆU ===== -->
+  <div id="sec-gioithieu" class="section-page">
+
+    <div class="card">
+      <div class="card-head"><span>🏛️</span><h3 data-i18n="intro.history.title">LỊCH SỬ THÀNH LẬP</h3></div>
+      <div class="card-body">
+        <div class="img-placeholder"><span>🖼️</span>Ảnh trụ sở Ban CHQS Xã Bình Mỹ</div>
+        <div class="intro-block">
+          <p data-i18n="intro.history.p1">Ban Chỉ huy Quân sự Xã Bình Mỹ được thành lập theo quy định của Luật Quốc phòng và Luật Dân quân tự vệ, là cơ quan quân sự địa phương thuộc UBND Xã Bình Mỹ, Thành phố Hồ Chí Minh.</p>
+          <br>
+          <p data-i18n="intro.history.p2">Trải qua hơn 25 năm xây dựng và phát triển, Ban CHQS Xã Bình Mỹ đã không ngừng lớn mạnh, hoàn thành xuất sắc nhiệm vụ quân sự — quốc phòng tại địa phương, góp phần bảo vệ vững chắc an ninh chính trị, trật tự an toàn xã hội trên địa bàn xã.</p>
+          <br>
+          <p data-i18n="intro.history.p3">Trong những năm qua, Ban CHQS xã liên tục được Bộ CHQS TP.HCM và UBND tặng bằng khen, giấy khen vì có thành tích xuất sắc trong công tác quân sự — quốc phòng địa phương.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="icon-box"><img src="images/icon-duties.svg" alt="Chức năng" onerror="this.style.display='none'"><span class="icon-fallback">⚙️</span></span>
+        <h3 data-i18n="intro.duties.title">CHỨC NĂNG NHIỆM VỤ</h3>
+      </div>
+      <div class="card-body">
+        <ul class="duty-list">
+          <li class="duty-item"><div class="duty-num">1</div><div class="duty-text" data-i18n="intro.duty.1">Tham mưu cho cấp ủy Đảng, chính quyền địa phương về công tác quân sự — quốc phòng trên địa bàn xã</div></li>
+          <li class="duty-item"><div class="duty-num">2</div><div class="duty-text" data-i18n="intro.duty.2">Xây dựng, huấn luyện, quản lý lực lượng dân quân tự vệ đạt tiêu chuẩn chiến đấu theo quy định</div></li>
+          <li class="duty-item"><div class="duty-num">3</div><div class="duty-text" data-i18n="intro.duty.3">Tổ chức thực hiện công tác tuyển quân, giao quân nghĩa vụ quân sự hàng năm đảm bảo đúng số lượng, chất lượng và tiến độ</div></li>
+          <li class="duty-item"><div class="duty-num">4</div><div class="duty-text" data-i18n="intro.duty.4">Quản lý hồ sơ quân sự, thống kê lực lượng dự bị động viên, công dân trong độ tuổi nghĩa vụ quân sự trên địa bàn</div></li>
+          <li class="duty-item"><div class="duty-num">5</div><div class="duty-text" data-i18n="intro.duty.5">Tuyên truyền, phổ biến giáo dục pháp luật về quốc phòng, an ninh, Luật Nghĩa vụ Quân sự cho nhân dân</div></li>
+          <li class="duty-item"><div class="duty-num">6</div><div class="duty-text" data-i18n="intro.duty.6">Phối hợp với lực lượng Công an xã trong công tác giữ gìn an ninh trật tự, phòng chống tội phạm, thiên tai, dịch bệnh</div></li>
+          <li class="duty-item"><div class="duty-num">7</div><div class="duty-text" data-i18n="intro.duty.7">Thực hiện chế độ trực sẵn sàng chiến đấu 24/7, đảm bảo xử lý kịp thời các tình huống phát sinh</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="icon-box"><img src="images/icon-structure.svg" alt="Cơ cấu tổ chức" onerror="this.style.display='none'"><span class="icon-fallback">🏗️</span></span>
+        <h3 data-i18n="intro.org.title">CƠ CẤU TỔ CHỨC BAN CHQS</h3>
+      </div>
+      <div class="card-body">
+        <div class="org-chart">
+          <div class="org-item">
+            <span class="icon-box org-icon"><img src="images/icon-star.svg" alt="" onerror="this.style.display='none'"><span class="icon-fallback">⭐</span></span>
+            <div>
+              <div class="org-title" data-i18n="intro.org.1.title">CHỈ HUY TRƯỞNG</div>
+              <div class="org-name"  data-i18n="intro.org.1.desc">Phụ trách chung, chịu trách nhiệm toàn diện trước cấp trên và UBND xã</div>
+            </div>
+          </div>
+          <div class="org-item sub">
+            <span class="icon-box org-icon"><img src="images/icon-medal.svg" alt="" onerror="this.style.display='none'"><span class="icon-fallback">🎖️</span></span>
+            <div>
+              <div class="org-title" data-i18n="intro.org.2.title">CHỈ HUY PHÓ — CHÍNH TRỊ VIÊN PHÓ</div>
+              <div class="org-name"  data-i18n="intro.org.2.desc">Phụ trách công tác đảng, công tác chính trị, tư tưởng trong lực lượng</div>
+            </div>
+          </div>
+          <div class="org-item sub">
+            <span class="icon-box org-icon"><img src="images/icon-report.svg" alt="" onerror="this.style.display='none'"><span class="icon-fallback">📋</span></span>
+            <div>
+              <div class="org-title" data-i18n="intro.org.3.title">CHỈ HUY PHÓ — THAM MƯU</div>
+              <div class="org-name"  data-i18n="intro.org.3.desc">Phụ trách công tác tham mưu, kế hoạch, huấn luyện, tuyển quân</div>
+            </div>
+          </div>
+          <div class="org-item sub">
+            <span class="icon-box org-icon"><img src="images/icon-shield.svg" alt="" onerror="this.style.display='none'"><span class="icon-fallback">🛡️</span></span>
+            <div>
+              <div class="org-title" data-i18n="intro.org.4.title">TRUNG ĐỘI DÂN QUÂN THƯỜNG TRỰC</div>
+              <div class="org-name"  data-i18n="intro.org.4.desc">Thực hiện nhiệm vụ trực sẵn sàng chiến đấu, tuần tra, bảo vệ địa bàn</div>
+            </div>
+          </div>
+          <div class="org-item sub">
+            <span class="icon-box org-icon"><img src="images/icon-group.svg" alt="" onerror="this.style.display='none'"><span class="icon-fallback">👥</span></span>
+            <div>
+              <div class="org-title" data-i18n="intro.org.5.title">LỰC LƯỢNG DÂN QUÂN TỰ VỆ CÁC ẤP</div>
+              <div class="org-name"  data-i18n="intro.org.5.desc">Tổ chức theo từng ấp, phối hợp thực hiện nhiệm vụ quốc phòng — an ninh cơ sở</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== TIN TỨC ===== -->
+  <div id="sec-tintuc" class="section-page">
+    <div class="news-list">
+
+      <div class="news-item" onclick="openNews(0)">
+        <div class="news-thumb">🪖</div>
+        <div class="news-content">
+          <span class="news-cat" data-i18n="news.cat.1">Giao quân NVQS</span>
+          <div class="news-title" data-i18n="news.title.1">Lễ giao nhận quân Nghĩa vụ Quân sự năm 2026 tại xã Bình Mỹ</div>
+          <div class="news-date"  data-i18n="news.date.1">📅 Tháng 02/2026</div>
+        </div>
+      </div>
+
+      <div class="news-item" onclick="openNews(1)">
+        <div class="news-thumb">🏋️</div>
+        <div class="news-content">
+          <span class="news-cat" data-i18n="news.cat.2">Hội thao Quốc phòng</span>
+          <div class="news-title" data-i18n="news.title.2">Xã Bình Mỹ đạt giải Nhì Hội thao Quốc phòng năm 2025</div>
+          <div class="news-date"  data-i18n="news.date.2">📅 Tháng 11/2025</div>
+        </div>
+      </div>
+
+      <div class="news-item" onclick="openNews(2)">
+        <div class="news-thumb">🏃</div>
+        <div class="news-content">
+          <span class="news-cat" data-i18n="news.cat.3">Huấn luyện Dân quân</span>
+          <div class="news-title" data-i18n="news.title.3">Kết thúc đợt huấn luyện dân quân tự vệ năm 2025 — 100% quân số hoàn thành</div>
+          <div class="news-date"  data-i18n="news.date.3">📅 Tháng 10/2025</div>
+        </div>
+      </div>
+
+      <div class="news-item" onclick="openNews(3)">
+        <div class="news-thumb">🛡️</div>
+        <div class="news-content">
+          <span class="news-cat" data-i18n="news.cat.4">Trực SSCĐ</span>
+          <div class="news-title" data-i18n="news.title.4">Tăng cường công tác trực sẵn sàng chiến đấu dịp Tết Nguyên Đán 2026</div>
+          <div class="news-date"  data-i18n="news.date.4">📅 Tháng 01/2026</div>
+        </div>
+      </div>
+
+      <div class="news-item" onclick="openNews(4)">
+        <div class="news-thumb">📣</div>
+        <div class="news-content">
+          <span class="news-cat" data-i18n="news.cat.5">Tuyên truyền NVQS</span>
+          <div class="news-title" data-i18n="news.title.5">Tuyên truyền Luật Nghĩa vụ Quân sự tại 6 ấp trên địa bàn xã Bình Mỹ</div>
+          <div class="news-date"  data-i18n="news.date.5">📅 Tháng 12/2025</div>
+        </div>
+      </div>
+
+      <div class="news-item" onclick="openNews(5)">
+        <div class="news-thumb">🎓</div>
+        <div class="news-content">
+          <span class="news-cat" data-i18n="news.cat.6">Tuyển sinh Quân sự</span>
+          <div class="news-title" data-i18n="news.title.6">Khai mạc đợt sơ tuyển tuyển sinh trường quân đội năm 2026 tại xã</div>
+          <div class="news-date"  data-i18n="news.date.6">📅 Tháng 03/2026</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== HỎI ĐÁP ===== -->
+  <div id="sec-hoidap" class="section-page">
+    <div class="card">
+      <div class="card-head">
+        <span class="icon-box"><img src="images/icon-faq.svg" alt="FAQ" onerror="this.style.display='none'"><span class="icon-fallback">❓</span></span>
+        <h3 data-i18n="faq.section.title">CÂU HỎI THƯỜNG GẶP</h3>
+      </div>
+      <div class="card-body" style="padding:14px;">
+        <div class="faq-list">
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span data-i18n="faq.q1">Công dân nam đến tuổi nào phải đăng ký nghĩa vụ quân sự?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer" data-i18n="faq.a1">Theo Luật Nghĩa vụ Quân sự 2015, công dân nam đủ 17 tuổi phải đến Ban CHQS xã để đăng ký nghĩa vụ quân sự. Độ tuổi gọi nhập ngũ là từ đủ 18 tuổi đến hết 25 tuổi (hoặc đến 27 tuổi với trường hợp được tạm hoãn).</div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span data-i18n="faq.q2">Đang học đại học có phải nhập ngũ không?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer" data-i18n="faq.a2">Sinh viên đang học tại các cơ sở giáo dục đại học được tạm hoãn gọi nhập ngũ trong thời gian học. Tuy nhiên vẫn phải đăng ký nghĩa vụ quân sự và sau khi tốt nghiệp sẽ được xem xét gọi nhập ngũ theo quy định.</div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span data-i18n="faq.q3">Thời hạn phục vụ tại ngũ là bao lâu?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer" data-i18n="faq.a3">Thời hạn phục vụ tại ngũ trong thời bình là 24 tháng (2 năm). Hạ sĩ quan, binh sĩ phục vụ tại ngũ tham gia bảo vệ đảo, vùng biển, vùng trời của Tổ quốc hoặc đơn vị chiến đấu phòng thủ vùng đặc biệt khó khăn có thể kéo dài thêm theo quy định.</div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span data-i18n="faq.q4">Trốn tránh nghĩa vụ quân sự bị xử phạt như thế nào?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer" data-i18n="faq.a4">Theo Nghị định 120/2013/NĐ-CP, không đăng ký nghĩa vụ quân sự phạt tiền từ 10-12 triệu đồng. Không chấp hành lệnh gọi nhập ngũ phạt tiền từ 15-25 triệu đồng. Trường hợp nghiêm trọng có thể bị truy cứu trách nhiệm hình sự.</div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span data-i18n="faq.q5">Công dân nữ có phải thực hiện nghĩa vụ quân sự không?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer" data-i18n="faq.a5">Công dân nữ trong độ tuổi thực hiện nghĩa vụ quân sự, trong thời bình nếu tự nguyện và quân đội có nhu cầu thì được phục vụ tại ngũ. Một số ngành nghề trong quân đội ưu tiên tuyển nữ như quân y, thông tin, kỹ thuật.</div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span data-i18n="faq.q6">Làm thế nào để tra cứu thông tin hồ sơ quân sự cá nhân?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer" data-i18n="faq.a6">Bạn có thể tra cứu thông tin hồ sơ quân sự cá nhân trực tiếp trên cổng thông tin này tại mục "Tra cứu". Chỉ cần nhập đúng số CCCD và họ tên khai sinh là xem được thông tin của mình.</div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              <span data-i18n="faq.q7">Liên hệ Ban CHQS xã ở đâu và giờ nào?</span>
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer" data-i18n="faq.a7">Ban CHQS Xã Bình Mỹ đặt tại trụ sở UBND Xã Bình Mỹ, TP.HCM. Giờ làm việc: Thứ Hai đến Thứ Sáu, 7:30 – 11:30 và 13:30 – 17:00. Liên hệ qua Zalo: 09875948.. hoặc Facebook trang Ban CHQS Xã Bình Mỹ.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LIÊN HỆ ===== -->
+  <div id="sec-lienhe" class="section-page">
+
+    <div class="card">
+      <div class="card-head">
+        <span class="icon-box"><img src="images/icon-contact.svg" alt="Liên hệ" onerror="this.style.display='none'"><span class="icon-fallback">📍</span></span>
+        <h3 data-i18n="contact.section.title">THÔNG TIN LIÊN HỆ</h3>
+      </div>
+      <div class="card-body">
+        <div style="border-radius:10px;overflow:hidden;margin-bottom:16px;border:1px solid var(--border);box-shadow:var(--shadow);">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3917.6!2d106.5!3d11.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3174d57b3b9d6f0f%3A0x1234567890abcdef!2zVUJORCBY4bsBIELDrG5oIE3hu7kgLSBI4buNeWVuIEPhu6cgQ2hpIC0gVFAuSE9DSCBNaW5o!5e0!3m2!1svi!2svn!4v1234567890"
+            width="100%" height="220" style="border:0;display:block;"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            title="Bản đồ UBND Xã Bình Mỹ">
+          </iframe>
+        </div>
+        <div style="text-align:center;margin-bottom:14px;">
+          <a href="https://maps.google.com/?q=UBND+Xa+Binh+My+Cu+Chi+Ho+Chi+Minh"
+             target="_blank"
+             style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;background:var(--red);color:#fff;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;"
+             data-i18n="contact.map.open">🗺️ Mở Google Maps</a>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-item">
+            <span class="icon-box contact-icon"><img src="images/icon-building.svg" alt="Địa chỉ" onerror="this.style.display='none'"><span class="icon-fallback">🏢</span></span>
+            <div>
+              <div class="contact-label" data-i18n="contact.addr.label">Địa chỉ</div>
+              <div class="contact-value" data-i18n="contact.addr.value">UBND Xã Bình Mỹ, TP.HCM</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="icon-box contact-icon"><img src="images/icon-clock.svg" alt="Giờ làm việc" onerror="this.style.display='none'"><span class="icon-fallback">🕐</span></span>
+            <div>
+              <div class="contact-label" data-i18n="contact.hours.label">Giờ làm việc</div>
+              <div class="contact-value" data-i18n="contact.hours.value">T2–T6: 7:30–11:30 & 13:30–17:00</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="icon-box contact-icon"><img src="images/icon-phone.svg" alt="Zalo" onerror="this.style.display='none'"><span class="icon-fallback">📱</span></span>
+            <div>
+              <div class="contact-label" data-i18n="contact.zalo.label">Zalo</div>
+              <div class="contact-value" data-i18n="contact.zalo.value">09875948..</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="icon-box contact-icon"><img src="images/iconfacebook.jpg" alt="Facebook" onerror="this.style.display='none'"><span class="icon-fallback">👥</span></span>
+            <div>
+              <div class="contact-label" data-i18n="contact.fb.label">Facebook</div>
+              <div class="contact-value">
+                <a href="https://www.facebook.com/share/18g8qhhaEB/?mibextid=wwXIfr" target="_blank"
+                   style="color:var(--red);" data-i18n="contact.fb.value">Ban CHQS Xã Bình Mỹ</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span>✉️</span><h3 data-i18n="contact.form.title">GỬI CÂU HỎI / PHẢN ÁNH</h3></div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" data-i18n="contact.form.name">Họ và tên *</label>
+            <input type="text" class="form-control" id="c-hoten"
+              data-i18n-ph="contact.form.name.ph" placeholder="Nhập họ và tên">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="contact.form.phone">Số điện thoại *</label>
+            <input type="tel" class="form-control" id="c-phone"
+              data-i18n-ph="contact.form.phone.ph" placeholder="Số liên lạc">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="contact.form.msg">Nội dung câu hỏi / phản ánh *</label>
+          <textarea class="form-control" id="c-msg"
+            data-i18n-ph="contact.form.msg.ph"
+            placeholder="Nhập nội dung cần hỏi hoặc phản ánh..."></textarea>
+        </div>
+        <button class="btn-search" onclick="submitContact()" style="margin-top:4px;">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:17px;height:17px;">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+          <span data-i18n="contact.form.submit">Gửi câu hỏi</span>
+        </button>
+        <div class="success-msg" id="c-success" data-i18n="contact.form.success">
+          ✅ Đã nhận câu hỏi! Ban CHQS xã sẽ phản hồi qua số điện thoại của bạn trong vòng 1–2 ngày làm việc.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- end main-container -->
+
+<!-- MODAL TIN TỨC -->
+<div class="news-modal" id="news-modal" onclick="closeNewsModal(event)">
+  <div class="news-modal-box">
+    <div class="news-modal-head">
+      <h3 id="modal-title">—</h3>
+      <button class="close-btn" onclick="closeNews()">✕</button>
+    </div>
+    <div class="news-modal-body">
+      <div class="img-placeholder"><span>🖼️</span>Ảnh minh họa hoạt động</div>
+      <p id="modal-content">—</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="site-footer">
+  <div class="site-footer-inner">
+    <h4 data-i18n="footer.name">BAN CHỈ HUY QUÂN SỰ XÃ BÌNH MỸ</h4>
+    <p><span data-i18n="footer.addr">Thành phố Hồ Chí Minh</span></p>
+    <p><span data-i18n="footer.zalo">Zalo: 09875948..</span> | <a href="https://www.facebook.com/share/18g8qhhaEB/?mibextid=wwXIfr" target="_blank" style="color:var(--gold);">Facebook</a></p>
+    <p><span data-i18n="footer.copyright">© 2026 HuynhTri. 149 Trung An Street, Binh My Commune, Ho Chi Minh City</span></p>
+    <div class="site-footer-links">
+      <a href="tracuu.html"     data-i18n="footer.lookup">🔍 Tra cứu</a>
+      <a href="tuyen-quan.html" data-i18n="footer.recruit">🪖 Tuyển quân</a>
+      <a href="tuyen-sinh.html" data-i18n="footer.edu">🎓 Tuyển sinh</a>
+    </div>
+  </div>
+</div>
+
 <script>
-  new QRCode(document.getElementById("qrcode"), {
-    text: "https://huynhtri203.github.io/Tracuu_cccd/",
-    width: 150,
-    height: 150,
+// ===== SLIDER =====
+let currentSlide = 0;
+const totalSlides = 3;
+let sliderTimer = setInterval(() => slideMove(1), 4000);
+
+function slideTo(idx) {
+  currentSlide = idx;
+  document.getElementById('slider-track').style.transform = `translateX(-${currentSlide * 100}%)`;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+  resetTimer();
+}
+function slideMove(dir) {
+  currentSlide = (currentSlide + dir + totalSlides) % totalSlides;
+  slideTo(currentSlide);
+}
+function resetTimer() {
+  clearInterval(sliderTimer);
+  sliderTimer = setInterval(() => slideMove(1), 4000);
+}
+
+// ===== ĐIỀU HƯỚNG SECTION =====
+function showSection(name, btn) {
+  document.querySelectorAll('.section-page').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== TÌM KIẾM =====
+const searchData = [
+  { cat: 'Tin tức', icon: '🪖', section: 'tintuc', idx: 0,
+    title: 'Lễ giao nhận quân Nghĩa vụ Quân sự năm 2026',
+    desc: 'Giao quân NVQS — Tháng 02/2026' },
+  { cat: 'Tin tức', icon: '🏋️', section: 'tintuc', idx: 1,
+    title: 'Xã Bình Mỹ đạt giải Nhì Hội thao Quốc phòng năm 2026',
+    desc: 'Hội thao Quốc phòng — Tháng 11/2025' },
+  { cat: 'Tin tức', icon: '🏃', section: 'tintuc', idx: 2,
+    title: 'Kết thúc đợt huấn luyện dân quân tự vệ năm 2025',
+    desc: 'Huấn luyện Dân quân — Tháng 10/2025' },
+  { cat: 'Tin tức', icon: '🛡️', section: 'tintuc', idx: 3,
+    title: 'Tăng cường trực sẵn sàng chiến đấu dịp Tết 2026',
+    desc: 'Trực SSCĐ — Tháng 01/2026' },
+  { cat: 'Tin tức', icon: '📣', section: 'tintuc', idx: 4,
+    title: 'Tuyên truyền Luật Nghĩa vụ Quân sự tại 6 ấp xã Bình Mỹ',
+    desc: 'Tuyên truyền NVQS — Tháng 12/2025' },
+  { cat: 'Tin tức', icon: '🎓', section: 'tintuc', idx: 5,
+    title: 'Khai mạc đợt sơ tuyển tuyển sinh trường quân đội năm 2026',
+    desc: 'Tuyển sinh Quân sự — Tháng 03/2026' },
+  { cat: 'Hỏi đáp', icon: '❓', section: 'hoidap', idx: 0,
+    title: 'Công dân nam đến tuổi nào phải đăng ký nghĩa vụ quân sự?',
+    desc: 'Nam đủ 17 tuổi phải đến Ban CHQS xã đăng ký NVQS' },
+  { cat: 'Hỏi đáp', icon: '❓', section: 'hoidap', idx: 1,
+    title: 'Đang học đại học có phải nhập ngũ không?',
+    desc: 'Sinh viên được tạm hoãn trong thời gian học' },
+  { cat: 'Hỏi đáp', icon: '❓', section: 'hoidap', idx: 2,
+    title: 'Thời hạn phục vụ tại ngũ là bao lâu?',
+    desc: 'Thời hạn phục vụ trong thời bình là 24 tháng' },
+  { cat: 'Hỏi đáp', icon: '❓', section: 'hoidap', idx: 3,
+    title: 'Trốn tránh nghĩa vụ quân sự bị xử phạt như thế nào?',
+    desc: 'Phạt tiền từ 10–25 triệu đồng, có thể bị truy cứu hình sự' },
+  { cat: 'Hỏi đáp', icon: '❓', section: 'hoidap', idx: 4,
+    title: 'Công dân nữ có phải thực hiện nghĩa vụ quân sự không?',
+    desc: 'Nữ có thể tình nguyện phục vụ khi quân đội có nhu cầu' },
+  { cat: 'Hỏi đáp', icon: '❓', section: 'hoidap', idx: 5,
+    title: 'Làm thế nào để tra cứu thông tin hồ sơ quân sự cá nhân?',
+    desc: 'Tra cứu bằng số CCCD và họ tên khai sinh trên trang tra cứu' },
+  { cat: 'Hỏi đáp', icon: '❓', section: 'hoidap', idx: 6,
+    title: 'Liên hệ Ban CHQS xã ở đâu và giờ nào?',
+    desc: 'UBND Xã Bình Mỹ, T2–T6: 7:30–11:30 & 13:30–17:00' },
+  { cat: 'Giới thiệu', icon: '🏛️', section: 'gioithieu', idx: -1,
+    title: 'Lịch sử thành lập Ban CHQS Xã Bình Mỹ',
+    desc: 'Hơn 25 năm xây dựng và phát triển' },
+  { cat: 'Giới thiệu', icon: '⚙️', section: 'gioithieu', idx: -1,
+    title: 'Chức năng nhiệm vụ của Ban CHQS xã',
+    desc: 'Tham mưu quốc phòng, huấn luyện dân quân, tuyển quân...' },
+  { cat: 'Giới thiệu', icon: '🏗️', section: 'gioithieu', idx: -1,
+    title: 'Cơ cấu tổ chức Ban CHQS Xã Bình Mỹ',
+    desc: 'Chỉ huy trưởng, chỉ huy phó, trung đội dân quân...' },
+  { cat: 'Liên hệ', icon: '📞', section: 'lienhe', idx: -1,
+    title: 'Thông tin liên hệ Ban CHQS Xã Bình Mỹ',
+    desc: 'Địa chỉ, giờ làm việc, Zalo, Facebook' },
+];
+
+function highlight(text, kw) {
+  if (!kw) return text;
+  const re = new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return text.replace(re, '<mark>$1</mark>');
+}
+
+function doSearch(kw) {
+  const q = kw.trim().toLowerCase();
+  const box = document.getElementById('search-results');
+  if (!q) {
+    box.innerHTML = `<div class="search-hint">${typeof t === 'function' ? t('search.hint') : 'Nhập từ khóa để tìm kiếm nội dung trang...'}</div>`;
+    return;
+  }
+  const hits = searchData.filter(d =>
+    d.title.toLowerCase().includes(q) ||
+    d.desc.toLowerCase().includes(q) ||
+    d.cat.toLowerCase().includes(q)
+  );
+  if (!hits.length) {
+    const emptyMsg = typeof t === 'function' ? t('search.empty') : 'Không tìm thấy kết quả cho';
+    box.innerHTML = `<div class="search-empty">😔 ${emptyMsg} "<b>${kw}</b>"</div>`;
+    return;
+  }
+  box.innerHTML = hits.map(d => `
+    <div class="search-result-item" onclick="goResult('${d.section}', ${d.idx})">
+      <span class="search-result-icon">${d.icon}</span>
+      <div>
+        <div class="search-result-cat">${d.cat}</div>
+        <div class="search-result-title">${highlight(d.title, kw)}</div>
+        <div class="search-result-desc">${highlight(d.desc, kw)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function goResult(section, idx) {
+  closeSearch();
+  const navBtns = document.querySelectorAll('.nav-item');
+  const sectionMap = { home: 0, gioithieu: 1, tintuc: 2, hoidap: 3, lienhe: 4 };
+  document.querySelectorAll('.section-page').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('sec-' + section).classList.add('active');
+  navBtns[sectionMap[section]].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (section === 'tintuc' && idx >= 0) setTimeout(() => openNews(idx), 300);
+  if (section === 'hoidap' && idx >= 0) {
+    setTimeout(() => {
+      const faqs = document.querySelectorAll('.faq-question');
+      if (faqs[idx]) { faqs[idx].click(); faqs[idx].scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    }, 300);
+  }
+}
+
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('search-input').focus(), 100);
+}
+function closeSearch() {
+  document.getElementById('search-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').innerHTML =
+    `<div class="search-hint">${typeof t === 'function' ? t('search.hint') : 'Nhập từ khóa để tìm kiếm nội dung trang...'}</div>`;
+}
+function closeSearchOverlay(e) {
+  if (e.target === document.getElementById('search-overlay')) closeSearch();
+}
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey && e.key === 'k') || (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA')) {
+    e.preventDefault(); openSearch();
+  }
+});
+
+// ===== HỎI ĐÁP =====
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.classList.remove('open');
+    q.nextElementSibling.classList.remove('open');
   });
+  if (!isOpen) {
+    btn.classList.add('open');
+    answer.classList.add('open');
+  }
+}
+
+// ===== TIN TỨC =====
+const newsData = [
+  {
+    title: 'Lễ giao nhận quân Nghĩa vụ Quân sự năm 2026 tại xã Bình Mỹ',
+    content: 'Sáng ngày [ngày]/02/2026, Ban CHQS Xã Bình Mỹ phối hợp với UBND xã và Ban CHQS tổ chức Lễ giao nhận quân Nghĩa vụ Quân sự năm 2026 trang trọng và đúng kế hoạch. Năm 2026, xã Bình Mỹ giao đủ 100% chỉ tiêu quân số được giao, đảm bảo chất lượng chính trị và sức khỏe theo yêu cầu. Các tân binh đã được gia đình và bà con địa phương tiễn đưa trong không khí ấm áp, tự hào.'
+  },
+  {
+    title: 'Xã Bình Mỹ đạt giải Nhì Hội thao Quốc phòng năm 2026',
+    content: 'Tại Hội thao Quốc phòng năm 2026, đội dân quân xã Bình Mỹ đã xuất sắc đạt giải Nhì toàn đoàn.'
+  },
+  {
+    title: 'Kết thúc đợt huấn luyện dân quân tự vệ năm 2025',
+    content: 'Ban CHQS Xã Bình Mỹ vừa hoàn thành đợt huấn luyện dân quân tự vệ năm 2025 với 100% quân số tham gia và hoàn thành chương trình. Nội dung huấn luyện bao gồm: điều lệnh đội ngũ, kỹ thuật chiến đấu bộ binh, phòng thủ dân sự, công tác dân vận và các kỹ năng xử lý tình huống thực tế. Qua đợt huấn luyện, lực lượng dân quân xã đã nâng cao đáng kể năng lực sẵn sàng chiến đấu.'
+  },
+  {
+    title: 'Tăng cường trực sẵn sàng chiến đấu dịp Tết Nguyên Đán 2026',
+    content: 'Thực hiện chỉ thị của Bộ CHQS TP.HCM và Ban CHQS, Ban CHQS Xã Bình Mỹ đã tổ chức tăng cường lực lượng trực sẵn sàng chiến đấu 24/24 trong suốt dịp Tết Nguyên Đán Bính Ngọ 2026. Lực lượng trực thực hiện nghiêm túc các phương án phòng thủ, phối hợp chặt chẽ với Công an xã và các lực lượng khác, góp phần đảm bảo an ninh chính trị, trật tự an toàn xã hội trên địa bàn trong dịp Tết.'
+  },
+  {
+    title: 'Tuyên truyền Luật Nghĩa vụ Quân sự tại 6 ấp xã Bình Mỹ',
+    content: 'Trong tháng 12/2025, Ban CHQS Xã Bình Mỹ đã phối hợp với Ban Tuyên giáo xã ủy tổ chức 6 buổi tuyên truyền Luật Nghĩa vụ Quân sự và các văn bản pháp luật liên quan tại 6 ấp trên địa bàn xã. Các buổi tuyên truyền thu hút đông đảo cán bộ, đảng viên và nhân dân tham dự. Qua đó nâng cao nhận thức, ý thức trách nhiệm của công dân trong việc thực hiện nghĩa vụ quân sự và bảo vệ Tổ quốc.'
+  },
+  {
+    title: 'Khai mạc đợt sơ tuyển tuyển sinh trường quân đội năm 2026',
+    content: 'Ban CHQS Xã Bình Mỹ vừa phối hợp với Hội đồng tuyển sinh quân sự tổ chức đợt sơ tuyển tuyển sinh vào các trường quân đội năm 2026. Đợt sơ tuyển tổ chức khám sức khỏe, xét duyệt lý lịch và tư vấn cho các thí sinh có nguyện vọng thi vào các trường quân đội. Các em học sinh, thanh niên quan tâm có thể liên hệ Ban CHQS xã để được hướng dẫn đầy đủ.'
+  },
+];
+
+function openNews(idx) {
+  const n = newsData[idx];
+  document.getElementById('modal-title').textContent = n.title;
+  document.getElementById('modal-content').textContent = n.content;
+  document.getElementById('news-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeNews() {
+  document.getElementById('news-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeNewsModal(e) {
+  if (e.target === document.getElementById('news-modal')) closeNews();
+}
+
+// ===== SLIDER HOẠT ĐỘNG =====
+let actCur = 0;
+const ACT_TOTAL = 5;
+let actTimer = setInterval(() => actMove(1), 5000);
+
+function actTo(idx) {
+  actCur = idx;
+  document.getElementById('act-track').style.transform = `translateX(-${actCur * 100}%)`;
+  document.querySelectorAll('.act-dot').forEach((d, i) => d.classList.toggle('active', i === actCur));
+  document.getElementById('act-cur').textContent = actCur + 1;
+  clearInterval(actTimer);
+  actTimer = setInterval(() => actMove(1), 5000);
+}
+function actMove(dir) {
+  actTo((actCur + dir + ACT_TOTAL) % ACT_TOTAL);
+}
+
+// ===== LIÊN HỆ =====
+function submitContact() {
+  const hoten = document.getElementById('c-hoten').value.trim();
+  const phone = document.getElementById('c-phone').value.trim();
+  const msg   = document.getElementById('c-msg').value.trim();
+  if (!hoten || !phone || !msg) {
+    alert(typeof t === 'function' && getCurrentLang() === 'en'
+      ? 'Please fill in all required fields!'
+      : 'Vui lòng điền đầy đủ thông tin!');
+    return;
+  }
+  const successEl = document.getElementById('c-success');
+  successEl.style.display = 'block';
+  // Cập nhật nội dung success msg theo ngôn ngữ hiện tại
+  if (typeof t === 'function') successEl.textContent = t('contact.form.success');
+  const submitBtn = document.querySelector('#sec-lienhe .btn-search');
+  submitBtn.disabled = true;
+  submitBtn.style.background = '#aaa';
+}
 </script>
-<script src="main.js"></script>
+
+<!-- scripts -->
+<script src="theme.js"></script>
+<script src="chatbot.js"></script>
+<script src="lang.js"></script>
 
 </body>
 </html>
