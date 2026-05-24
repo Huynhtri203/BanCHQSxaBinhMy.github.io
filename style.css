@@ -9,10 +9,32 @@
   --gold-light: #FEF9E7;
   --bg: #F5F5F0;
   --surface: #FFFFFF;
+  --surface-alt: #FAFAF8;
   --text: #1A1A1A;
   --text-muted: #6B6B6B;
   --border: #E0DDD5;
   --shadow: 0 2px 16px rgba(0,0,0,0.08);
+  --input-bg: #FAFAF8;
+  --input-focus-bg: #FFFFFF;
+  --placeholder-color: #bbb;
+}
+
+body.dark {
+  --bg: #111418;
+  --surface: #171E27;
+  --surface-alt: #1F2936;
+  --text: #E4E8F1;
+  --text-muted: #94A3B8;
+  --border: #2E3A47;
+  --shadow: 0 2px 20px rgba(0,0,0,0.5);
+  --red: #E45753;
+  --red-dark: #A8342D;
+  --red-light: #F2B7B4;
+  --gold: #D4A017;
+  --gold-light: #4F5A67;
+  --input-bg: #1F2936;
+  --input-focus-bg: #293549;
+  --placeholder-color: #8892A5;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -57,11 +79,26 @@ body {
   color: rgba(255,255,255,0.7);
   margin-top: 2px;
 }
-
-/* ===========================
-   STRIPE VÀNG
-   =========================== */
-.stripe {
+  .theme-toggle {
+    margin-left: auto;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background .2s, transform .2s, border-color .2s;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover {
+    background: rgba(255,255,255,0.16);
+    transform: translateY(-1px);
+  }
   width: 100%;
   height: 4px;
   background: linear-gradient(90deg, var(--gold) 0%, #F0C040 50%, var(--gold) 100%);
@@ -110,13 +147,35 @@ body {
   color: var(--text);
   outline: none;
   transition: border-color .2s;
-  background: #FAFAF8;
+  background: var(--input-bg);
 }
 .field-input:focus {
   border-color: var(--red);
-  background: #fff;
+  background: var(--input-focus-bg);
 }
-.field-input::placeholder { color: #bbb; font-weight: 400; }
+.field-input::placeholder { color: var(--placeholder-color); font-weight: 400; }
+
+.icon-box {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.icon-box img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.icon-box .icon-fallback {
+  font-size: 20px;
+}
 
 /* ===========================
    RECAPTCHA
