@@ -713,8 +713,7 @@ const ADMIN_PASS = 'binhmy2026';                  // Mật khẩu admin
 const GAS_URL    = '';                            // Google Apps Script URL (nếu muốn ghi dữ liệu)
 /* ================================================================ */
 
-<!-- const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=Sheet3`; -->
-
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=Sheet1`;
 
 /* ── DỮ LIỆU DEMO ── */
 let DEMO = [
@@ -819,11 +818,11 @@ async function doSearch() {
   try {
     const data = await fetchData();
     const hits = data.filter(r => {
-      if (cccd  && r.cccd?.includes(cccd))                              return true;
-      if (soqd  && r.so_quyet_dinh?.toLowerCase().includes(soqd.toLowerCase())) return true;
-      if (hoten && r.ho_ten?.toLowerCase().includes(hoten))            return true;
-      if (ngay  && r.ngay_sinh === ngay)                               return true;
-      return false;
+      if (cccd  && !r.cccd?.includes(cccd)) return false;
+      if (soqd  && !r.so_quyet_dinh?.toLowerCase().includes(soqd.toLowerCase())) return false;
+      if (hoten && !r.ho_ten?.toLowerCase().includes(hoten)) return false;
+      if (ngay  && r.ngay_sinh !== ngay) return false;
+      return true;
     });
     hits.length ? renderResults(hits) : setResultState('empty','😔 Không tìm thấy',
       'Không có quyết định phù hợp.<br>Vui lòng kiểm tra lại hoặc liên hệ Ban CHQS xã.');
