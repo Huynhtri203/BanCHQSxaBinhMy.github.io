@@ -563,7 +563,7 @@ select.finput { cursor: pointer; }
           <div class="setup-text">
             <strong>Ghi dữ liệu từ web (nâng cao):</strong> Tạo Google Apps Script Web App
             để nhận POST request và ghi vào Sheets. Điền URL vào biến <code>GAS_URL</code>.
-            Nếu để trống, Admin cần nhập liệu trực tiếp vào Google Sheets.
+            Nếu để trống, dữ liệu chỉ được lưu tạm trên trang và không đồng bộ về Google Sheets.
           </div>
         </div>
 
@@ -1111,9 +1111,13 @@ async function saveRecord() {
   document.getElementById('btn-save').disabled = false;
   document.getElementById('save-spin').style.display = 'none';
   msgEl.className = 'msg ok';
-  msgEl.textContent = editIdx >= 0
-    ? '✅ Đã cập nhật thành công!'
-    : '✅ Đã thêm quyết định! Nhớ cập nhật Google Sheets thủ công nếu chưa dùng GAS.';
+  if (editIdx >= 0) {
+    msgEl.textContent = '✅ Đã cập nhật thành công!';
+  } else if (GAS_URL) {
+    msgEl.textContent = '✅ Đã thêm quyết định và đã gửi lên Google Sheets!';
+  } else {
+    msgEl.textContent = '✅ Đã thêm quyết định vào bộ nhớ tạm thời. Để lưu vào Google Sheets, cấu hình GAS_URL hoặc cập nhật trực tiếp Sheets.';
+  }
 
   setTimeout(() => { closeModal(); loadAdminData(); }, 1600);
 }
