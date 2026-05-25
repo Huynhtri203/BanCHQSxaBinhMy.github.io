@@ -334,7 +334,7 @@ select.finput { cursor: pointer; }
       <h2>TRA CỨU QUYẾT ĐỊNH ĐIỀU ĐỘNG</h2>
       <p>Tra cứu và xem file quyết định điều động cá nhân</p>
     </div>
-    <a href="index.html" class="back-btn">← Trang chủ</a>
+    <a href="main.html" class="back-btn">← Trang chủ</a>
   </div>
 </div>
 <div class="gold-line"></div>
@@ -563,7 +563,7 @@ select.finput { cursor: pointer; }
           <div class="setup-text">
             <strong>Ghi dữ liệu từ web (nâng cao):</strong> Tạo Google Apps Script Web App
             để nhận POST request và ghi vào Sheets. Điền URL vào biến <code>GAS_URL</code>.
-            Nếu để trống, dữ liệu chỉ được lưu tạm trên trang và không đồng bộ về Google Sheets.
+            Nếu để trống, Admin cần nhập liệu trực tiếp vào Google Sheets.
           </div>
         </div>
 
@@ -713,7 +713,8 @@ const ADMIN_PASS = 'binhmy2026';                  // Mật khẩu admin
 const GAS_URL    = '';                            // Google Apps Script URL (nếu muốn ghi dữ liệu)
 /* ================================================================ */
 
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQnlg0M8AJnF8DbTF7hkAW-LSlnrj1htIL5_RvKr7MsFmlk_XNJwiFcpjWk5xl9xD8DDny9TynGs_Vb/pub?output=csv';
+// Link CSV publish đúng từ Google Sheets (File → Publish to web → Sheet3 → CSV)
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQnlg0M8AJnF8DbTF7hkAW-LSlnrj1htIL5_RvKr7MsFmlk_XNJwiFcpjWk5xl9xD8DDny9TynGs_Vb/pub?gid=638625438&single=true&output=csv';
 
 /* ── DỮ LIỆU DEMO ── */
 let DEMO = [
@@ -739,6 +740,35 @@ let editIdx     = -1;
 let blobUrl     = null;
 
 /* ================================================================
+   DATA — luôn lấy từ Sheets, không dùng DEMO khi đã có CSV_URL
+   ================================================================ */
+async function fetchData(forceRefresh) {
+  if (!forceRefresh && cachedData) {
+    console.log('[fetchData] Dùng cache:', cachedData.length, 'dòng');
+    return cachedData;
+  }
+  try {
+    const url = CSV_URL + '&nocache=' + Date.now();
+    console.log('[fetchData] Gọi URL:', url);
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const text = await r.text();
+    console.log('[fetchData] CSV nhận được (' + text.length + ' ký tự), 200 ký tự đầu:\n', text.substring(0, 200));
+    const parsed = parseCSV(text);
+    if (parsed.length === 0) {
+      console.warn('[fetchData] Parse ra 0 dòng! Kiểm tra tên cột trong Sheets.');
+      return DEMO;
+    }
+    cachedData = parsed;
+    allData = parsed;
+    return cachedData;
+  } catch(e) {
+    console.error('[fetchData] Lỗi:', e.message, '— dùng DEMO');
+    return DEMO;
+  }
+}
+
+/* ================================================================
    TABS
    ================================================================ */
 function switchTab(name, btn) {
@@ -755,28 +785,107 @@ function switchTab(name, btn) {
    ================================================================ */
 async function fetchData(forceRefresh) {
   if (!forceRefresh && cachedData) return cachedData;
-  if (SHEET_ID === 'YOUR_GOOGLE_SHEET_ID_HERE') return DEMO;
   try {
-    const r = await fetch(CSV_URL + '&t=' + Date.now());
+    // Thêm timestamp để tránh cache trình duyệt
+    const url = CSV_URL + '&t=' + Date.now();
+    console.log('[fetchData] Đang tải:', url);
+    const r = await fetch(url);
     if (!r.ok) throw new Error('HTTP ' + r.status);
-    cachedData = parseCSV(await r.text());
+    const text = await r.text();
+    console.log('[fetchData] Raw CSV (100 ký tự đầu):', text.substring(0, 100));
+    const parsed = parseCSV(text);
+    console.log('[fetchData] Parsed được', parsed.length, 'dòng:', parsed);
+    cachedData = parsed;
     return cachedData;
   } catch(e) {
-    console.warn('Sheets error, using demo:', e);
+    console.warn('[fetchData] Lỗi, dùng demo:', e.message);
     return DEMO;
   }
 }
 
 function parseCSV(text) {
+  // Loại bỏ BOM và chuẩn hóa xuống dòng
+  text = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
   const lines = text.trim().split('\n');
-  if (lines.length < 2) return [];
-  const headers = csvSplit(lines[0]).map(h => h.replace(/^"|"$/g,'').trim());
-  return lines.slice(1).map(line => {
+  if (lines.length < 2) {
+    console.warn('[parseCSV] Chỉ có', lines.length, 'dòng');
+    return [];
+  }
+
+  const rawHeaders = csvSplit(lines[0]).map(h => h.replace(/^"|"$/g,'').trim());
+  console.log('[parseCSV] Headers gốc:', rawHeaders);
+
+  // Map tên cột — hỗ trợ cột A bị trống (mặc định là so_quyet_dinh)
+  const headerMap = {
+    '':                  'so_quyet_dinh', // Cột A trống → mặc định là số QĐ
+    'so_quyet_dinh':     'so_quyet_dinh',
+    'số quyết định':     'so_quyet_dinh',
+    'ho_ten':            'ho_ten',
+    'họ và tên':         'ho_ten',
+    'họ tên':            'ho_ten',
+    'cccd':              'cccd',
+    'số cccd':           'cccd',
+    'cmnd':              'cccd',
+    'ngay_sinh':         'ngay_sinh',
+    'ngày sinh':         'ngay_sinh',
+    'don_vi_cu':         'don_vi_cu',
+    'đơn vị cũ':         'don_vi_cu',
+    'don_vi_moi':        'don_vi_moi',
+    'đơn vị mới':        'don_vi_moi',
+    'chuc_vu':           'chuc_vu',
+    'chức vụ':           'chuc_vu',
+    'ngay_quyet_dinh':   'ngay_quyet_dinh',
+    'ngày quyết định':   'ngay_quyet_dinh',
+    'hieu_luc':          'hieu_luc',
+    'hiệu lực':          'hieu_luc',
+    'pdf_url':           'pdf_url',
+    'link pdf':          'pdf_url',
+    'ghi_chu':           'ghi_chu',
+    'ghi chú':           'ghi_chu',
+  };
+
+  // Theo dõi cột A đã được map chưa (tránh map trùng nếu có nhiều cột trống)
+  let firstEmptyMapped = false;
+  const headers = rawHeaders.map(h => {
+    const key = h.toLowerCase().trim();
+    if (key === '' && !firstEmptyMapped) {
+      firstEmptyMapped = true;
+      return 'so_quyet_dinh';
+    }
+    return headerMap[key] || h;
+  });
+  console.log('[parseCSV] Headers sau map:', headers);
+
+  const rows = lines.slice(1).map(line => {
     const vals = csvSplit(line);
     const obj  = {};
-    headers.forEach((h,i) => obj[h] = (vals[i]||'').replace(/^"|"$/g,'').trim());
+    headers.forEach((h, i) => {
+      let v = (vals[i] || '').replace(/^"|"$/g, '').trim();
+      // Chuẩn hóa ngày: DD/MM/YYYY → YYYY-MM-DD để so sánh nhất quán
+      if ((h === 'ngay_sinh' || h === 'ngay_quyet_dinh' || h === 'hieu_luc') && v) {
+        v = normDate(v);
+      }
+      obj[h] = v;
+    });
     return obj;
   }).filter(r => r.ho_ten || r.cccd);
+
+  console.log('[parseCSV] Tổng dòng hợp lệ:', rows.length, rows);
+  return rows;
+}
+
+// Chuẩn hóa ngày về YYYY-MM-DD dù đầu vào là DD/MM/YYYY hay YYYY-MM-DD
+function normDate(d) {
+  if (!d) return '';
+  d = d.trim();
+  // Dạng DD/MM/YYYY
+  const m1 = d.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m1) return `${m1[3]}-${m1[2].padStart(2,'0')}-${m1[1].padStart(2,'0')}`;
+  // Dạng YYYY-MM-DD (đã đúng)
+  const m2 = d.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m2) return d;
+  return d; // Giữ nguyên nếu không nhận dạng được
 }
 
 function csvSplit(line) {
@@ -799,10 +908,20 @@ function fmtDate(d) {
 /* ================================================================
    TRA CỨU
    ================================================================ */
+
+// Chuẩn hóa chuỗi: bỏ dấu, lowercase, trim — giúp tìm kiếm không phân biệt dấu
+function norm(s) {
+  if (!s) return '';
+  return s.toString().toLowerCase().trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')   // Bỏ dấu tiếng Việt
+    .replace(/đ/g, 'd').replace(/Đ/g, 'd');
+}
+
 async function doSearch() {
   const cccd  = document.getElementById('s-cccd').value.trim();
   const soqd  = document.getElementById('s-soqd').value.trim();
-  const hoten = document.getElementById('s-hoten').value.trim().toLowerCase();
+  const hoten = document.getElementById('s-hoten').value.trim();
   const ngay  = document.getElementById('s-ngaysinh').value;
 
   if (!cccd && !soqd && !hoten && !ngay) {
@@ -813,21 +932,55 @@ async function doSearch() {
   const btn = document.getElementById('btn-search');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Đang tra cứu...';
-  setResultState('loading','⏳ Đang tìm kiếm...','Đang kết nối cơ sở dữ liệu...');
+  setResultState('loading','⏳ Đang tìm kiếm...','Đang kết nối Google Sheets...');
 
   try {
-    const data = await fetchData();
+    // Luôn dùng cache nếu có, chỉ fetch mới lần đầu
+    const data = await fetchData(false);
+    console.log('[doSearch] Tổng dữ liệu:', data.length, 'dòng');
+
+    if (data.length > 0) {
+      console.log('[doSearch] Dòng đầu tiên:', JSON.stringify(data[0]));
+      console.log('[doSearch] Giá trị CCCD dòng 1:', JSON.stringify(data[0].cccd));
+      console.log('[doSearch] norm(cccd nhập):', norm(cccd));
+      console.log('[doSearch] norm(cccd data):', norm(data[0].cccd));
+    }
+
     const hits = data.filter(r => {
-      if (cccd  && !r.cccd?.includes(cccd)) return false;
-      if (soqd  && !r.so_quyet_dinh?.toLowerCase().includes(soqd.toLowerCase())) return false;
-      if (hoten && !r.ho_ten?.toLowerCase().includes(hoten)) return false;
-      if (ngay  && r.ngay_sinh !== ngay) return false;
-      return true;
+      const rCccd  = norm(r.cccd);
+      const rSoqd  = norm(r.so_quyet_dinh);
+      const rHoten = norm(r.ho_ten);
+      const rNgay  = (r.ngay_sinh || '').trim();
+
+      const matchCccd  = cccd  && rCccd.includes(norm(cccd));
+      const matchSoqd  = soqd  && rSoqd.includes(norm(soqd));
+      const matchHoten = hoten && rHoten.includes(norm(hoten));
+      const matchNgay  = ngay  && rNgay === ngay;
+
+      console.log(`[filter] "${r.ho_ten}" | cccd:"${r.cccd}"→"${rCccd}" vs "${norm(cccd)}" match:${matchCccd} | ten match:${matchHoten} | ngay:"${rNgay}" vs "${ngay}" match:${matchNgay}`);
+
+      return matchCccd || matchSoqd || matchHoten || matchNgay;
     });
-    hits.length ? renderResults(hits) : setResultState('empty','😔 Không tìm thấy',
-      'Không có quyết định phù hợp.<br>Vui lòng kiểm tra lại hoặc liên hệ Ban CHQS xã.');
+
+    console.log('[doSearch] Kết quả:', hits.length, 'dòng khớp');
+
+    if (hits.length) {
+      renderResults(hits);
+    } else {
+      const sample = data.slice(0, 3).map(r =>
+        `CCCD:"${r.cccd}" | Tên:"${r.ho_ten}" | Ngày:"${r.ngay_sinh}"`
+      ).join('<br>');
+      setResultState('empty', '😔 Không tìm thấy kết quả',
+        `Không có quyết định phù hợp.<br>
+        Vui lòng kiểm tra lại hoặc liên hệ Ban CHQS xã.<br><br>
+        <small style="color:#ccc;font-size:11px;">
+          Dữ liệu có ${data.length} bản ghi${data.length > 0 ? `:<br><em>${sample}</em>` : ''}
+        </small>`
+      );
+    }
   } catch(e) {
-    setResultState('error','❌ Lỗi kết nối','Không thể tải dữ liệu. Vui lòng thử lại.');
+    console.error('[doSearch] Lỗi:', e);
+    setResultState('error','❌ Lỗi kết nối', `Không thể tải dữ liệu: ${e.message}<br>Vui lòng thử lại.`);
   } finally {
     btn.disabled = false;
     btn.innerHTML = '🔍 Tra cứu ngay';
@@ -960,16 +1113,17 @@ function doLogout() {
    ================================================================ */
 async function loadAdminData() {
   document.getElementById('admin-loading').style.display = 'block';
-  cachedData = null;
-  allData = await fetchData(true);
+  // Force refresh để lấy data mới nhất từ Sheets
+  const data = await fetchData(true);
+  allData = data;
   document.getElementById('admin-loading').style.display = 'none';
 
-  const hasPdf = allData.filter(r => r.pdf_url && r.pdf_url.trim()).length;
-  document.getElementById('st-total').textContent  = allData.length;
+  const hasPdf = data.filter(r => r.pdf_url && r.pdf_url.trim()).length;
+  document.getElementById('st-total').textContent  = data.length;
   document.getElementById('st-haspdf').textContent = hasPdf;
-  document.getElementById('st-nopdf').textContent  = allData.length - hasPdf;
+  document.getElementById('st-nopdf').textContent  = data.length - hasPdf;
 
-  renderAdminTable(allData);
+  renderAdminTable(data);
 }
 
 function renderAdminTable(data) {
@@ -1111,13 +1265,9 @@ async function saveRecord() {
   document.getElementById('btn-save').disabled = false;
   document.getElementById('save-spin').style.display = 'none';
   msgEl.className = 'msg ok';
-  if (editIdx >= 0) {
-    msgEl.textContent = '✅ Đã cập nhật thành công!';
-  } else if (GAS_URL) {
-    msgEl.textContent = '✅ Đã thêm quyết định và đã gửi lên Google Sheets!';
-  } else {
-    msgEl.textContent = '✅ Đã thêm quyết định vào bộ nhớ tạm thời. Để lưu vào Google Sheets, cấu hình GAS_URL hoặc cập nhật trực tiếp Sheets.';
-  }
+  msgEl.textContent = editIdx >= 0
+    ? '✅ Đã cập nhật thành công!'
+    : '✅ Đã thêm quyết định! Nhớ cập nhật Google Sheets thủ công nếu chưa dùng GAS.';
 
   setTimeout(() => { closeModal(); loadAdminData(); }, 1600);
 }
@@ -1215,15 +1365,16 @@ function closePdfModal(e) {
 async function testConn() {
   const el = document.getElementById('cfg-status');
   el.textContent = '🔄 Đang kiểm tra...';
-  if (SHEET_ID === 'YOUR_GOOGLE_SHEET_ID_HERE') {
-    el.innerHTML = '<span style="color:#B7950B;">⚠️ Chưa cấu hình — đang dùng dữ liệu demo</span>';
-    return;
-  }
   try {
-    const r = await fetch(CSV_URL, { signal: AbortSignal.timeout(6000) });
-    el.innerHTML = r.ok
-      ? '<span style="color:#1E8449;">✅ Kết nối thành công!</span>'
-      : `<span style="color:#c00;">❌ Lỗi HTTP ${r.status}</span>`;
+    const r = await fetch(CSV_URL + '&t=' + Date.now(), { signal: AbortSignal.timeout(8000) });
+    if (r.ok) {
+      const text = await r.text();
+      const lines = text.trim().split('\n');
+      el.innerHTML = `<span style="color:#1E8449;">✅ Kết nối thành công! Đọc được ${lines.length - 1} bản ghi.</span>`;
+      console.log('[testConn] Headers:', lines[0]);
+    } else {
+      el.innerHTML = `<span style="color:#c00;">❌ Lỗi HTTP ${r.status} — kiểm tra lại link CSV</span>`;
+    }
   } catch(e) {
     el.innerHTML = `<span style="color:#c00;">❌ ${e.message}</span>`;
   }
