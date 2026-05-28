@@ -198,11 +198,10 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:#F5F3EE;min-height:100vh
 
 <div class="main">
 
-  <!-- TABS -->
+  <!-- TABS — chỉ hiện 2 tab công khai -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('search',this)">🔍 Tra cứu</button>
     <button class="tab-btn" onclick="switchTab('admin',this)">🔐 Quản lý Admin</button>
-    <button class="tab-btn" onclick="switchTab('setup',this)">⚙️ Cài đặt</button>
   </div>
 
   <!-- ══════════ PANEL TRA CỨU ══════════ -->
@@ -277,7 +276,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:#F5F3EE;min-height:100vh
         </div>
         <button class="btn-primary" onclick="doLogin()">🔐 Đăng nhập</button>
         <div class="msg" id="login-msg"></div>
-        <p class="search-note" style="margin-top:12px;">Demo: admin / binhmy2026</p>
+        <p class="search-note" style="margin-top:12px;">HuynhMinhTri</p>
       </div>
     </div>
 
@@ -289,6 +288,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:#F5F3EE;min-height:100vh
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button class="btn-sm green-fill" onclick="openAddModal()">➕ Thêm quyết định</button>
           <button class="btn-sm" onclick="loadAdminData()">🔄 Làm mới</button>
+          <button class="btn-sm" onclick="toggleSetup()" id="btn-setup" style="border-color:#C9A227;color:#7A5C00;">⚙️ Cài đặt</button>
           <button class="btn-sm" onclick="doLogout()" style="color:#c00;border-color:#f5c0c0;">🚪 Đăng xuất</button>
         </div>
       </div>
@@ -322,35 +322,39 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:#F5F3EE;min-height:100vh
         </div>
       </div>
 
-    </div>
-  </div><!-- end panel-admin -->
+    </div><!-- end admin-main, data table card -->
 
-  <!-- ══════════ PANEL CÀI ĐẶT ══════════ -->
-  <div id="panel-setup" class="panel">
-    <div class="card">
-      <div class="card-head"><span>⚙️</span><h3>HƯỚNG DẪN KẾT NỐI GOOGLE SHEETS</h3></div>
-      <div class="card-body">
-        <div class="setup-step"><div class="setup-num">1</div><div class="setup-text">Hàng tiêu đề Sheet3 phải đúng thứ tự: <code>so_quyet_dinh</code> <code>ho_ten</code> <code>cccd</code> <code>ngay_sinh</code> <code>don_vi_cu</code> <code>don_vi_moi</code> <code>chuc_vu</code> <code>ngay_quyet_dinh</code> <code>hieu_luc</code> <code>pdf_url</code> <code>ghi_chu</code></div></div>
-        <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><strong>Publish to web:</strong> File → Share → Publish to web → chọn <em>Sheet3</em> → <em>CSV</em> → Publish. Copy link CSV nhận được.</div></div>
-        <div class="setup-step"><div class="setup-num">3</div><div class="setup-text">Điền link CSV vào biến <code>CSV_URL</code> trong <code>&lt;script&gt;</code> cuối file HTML này.</div></div>
-        <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><strong>Upload PDF lên Google Drive</strong> → Get link → đổi <code>/view</code> thành <code>/preview</code> → điền vào cột <code>pdf_url</code> trong Sheets.</div></div>
-        <div class="setup-step"><div class="setup-num">5</div><div class="setup-text"><strong>⚠️ Phải chạy qua http:// server</strong> (VS Code Live Server, Python http.server...) — không mở file:// trực tiếp vì trình duyệt chặn fetch().</div></div>
-        <div class="config-box">
-          <div style="font-size:12px;font-weight:700;color:#8B1A1A;margin-bottom:8px;">⚙️ Cấu hình hiện tại</div>
-          <div style="font-size:13px;color:#555;line-height:1.9;">
-            CSV URL: <code id="cfg-url" style="font-size:10px;word-break:break-all;">—</code><br>
-            Trạng thái: <span id="cfg-status">🔄 Chưa kiểm tra</span>
+      <!-- ⚙️ CÀI ĐẶT — chỉ hiện sau khi đăng nhập -->
+      <div id="admin-setup-box" style="display:none;animation:fadeUp .25s ease;">
+        <div class="card">
+          <div class="card-head">
+            <span>⚙️</span>
+            <h3>HƯỚNG DẪN KẾT NỐI GOOGLE SHEETS</h3>
+            <button onclick="toggleSetup()" style="margin-left:auto;background:rgba(255,255,255,.2);border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">✕</button>
           </div>
-          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn-sm" onclick="testConn()">🔌 Kiểm tra kết nối</button>
-            <button class="btn-sm" onclick="clearCache()">🗑️ Xóa cache</button>
+          <div class="card-body">
+            <div class="setup-step"><div class="setup-num">1</div><div class="setup-text">Hàng tiêu đề Sheet3 phải đúng thứ tự: <code>so_quyet_dinh</code> <code>ho_ten</code> <code>cccd</code> <code>ngay_sinh</code> <code>don_vi_cu</code> <code>don_vi_moi</code> <code>chuc_vu</code> <code>ngay_quyet_dinh</code> <code>hieu_luc</code> <code>pdf_url</code> <code>ghi_chu</code></div></div>
+            <div class="setup-step"><div class="setup-num">2</div><div class="setup-text"><strong>Publish to web:</strong> File → Share → Publish to web → chọn <em>Sheet3</em> → <em>CSV</em> → Publish. Copy link CSV nhận được.</div></div>
+            <div class="setup-step"><div class="setup-num">3</div><div class="setup-text">Điền link CSV vào biến <code>CSV_URL</code> trong <code>&lt;script&gt;</code> cuối file HTML này.</div></div>
+            <div class="setup-step"><div class="setup-num">4</div><div class="setup-text"><strong>Upload PDF lên Google Drive</strong> → Get link → đổi <code>/view</code> thành <code>/preview</code> → điền vào cột <code>pdf_url</code> trong Sheets.</div></div>
+            <div class="setup-step"><div class="setup-num">5</div><div class="setup-text"><strong>⚠️ Phải chạy qua http:// server</strong> (VS Code Live Server, Python http.server...) — không mở file:// trực tiếp vì trình duyệt chặn fetch().</div></div>
+            <div class="config-box">
+              <div style="font-size:12px;font-weight:700;color:#8B1A1A;margin-bottom:8px;">⚙️ Cấu hình hiện tại</div>
+              <div style="font-size:13px;color:#555;line-height:1.9;">
+                CSV URL: <code id="cfg-url" style="font-size:10px;word-break:break-all;">—</code><br>
+                Trạng thái: <span id="cfg-status">🔄 Chưa kiểm tra</span>
+              </div>
+              <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn-sm" onclick="testConn()">🔌 Kiểm tra kết nối</button>
+                <button class="btn-sm" onclick="clearCache()">🗑️ Xóa cache</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-</div><!-- end main -->
+    </div><!-- end admin-main -->
+  </div><!-- end panel-admin -->
 
 <!-- ══════════ MODAL THÊM / SỬA ══════════ -->
 <div class="modal-bg" id="modal-add" onclick="closeModalBg(event)">
@@ -451,10 +455,21 @@ function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   btn.classList.add('active');
-  if (name === 'setup') {
-    document.getElementById('cfg-url').textContent = CSV_URL.substring(0, 80) + '...';
-  }
+  // Ẩn setup khi chuyển tab
+  const sb = document.getElementById('admin-setup-box');
+  if (sb) sb.style.display = 'none';
   if (name === 'admin' && isLoggedIn) loadAdminData();
+}
+
+/* ── TOGGLE SETUP (chỉ admin) ── */
+function toggleSetup() {
+  const box = document.getElementById('admin-setup-box');
+  const isHidden = box.style.display === 'none' || box.style.display === '';
+  box.style.display = isHidden ? 'block' : 'none';
+  if (isHidden) {
+    document.getElementById('cfg-url').textContent = CSV_URL.substring(0, 80) + '...';
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 /* ── DATA ── */
@@ -717,6 +732,9 @@ function doLogout() {
   document.getElementById('admin-main').style.display = 'none';
   document.getElementById('a-pass').value = '';
   document.getElementById('login-msg').className = 'msg';
+  // Ẩn setup khi đăng xuất
+  const sb = document.getElementById('admin-setup-box');
+  if (sb) sb.style.display = 'none';
 }
 
 async function loadAdminData() {
@@ -912,7 +930,7 @@ function clearCache() {
   cachedData=null;
   document.getElementById('cfg-status').innerHTML='<span style="color:#1E8449;">✅ Đã xóa cache!</span>';
 }
-document.getElementById('cfg-url').textContent=CSV_URL.substring(0,80)+'...';
+
 </script>
 </body>
 </html>
