@@ -27,6 +27,7 @@
 }
 
 body.dark {
+  background: linear-gradient(180deg, #0d1218 0%, #141c24 45%, #10161d 100%);
   --bg:            #0F1318;
   --surface:       #161D27;
   --surface-alt:   #1D2735;
@@ -52,7 +53,7 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg);
+  background: linear-gradient(180deg, #f7f3ec 0%, var(--bg) 45%, #efe8de 100%);
   color: var(--text);
   min-height: 100vh;
   display: flex;
@@ -110,7 +111,9 @@ button { font-family: inherit; }
   box-shadow: var(--shadow);
   padding: 24px 20px 20px;
   margin-bottom: 20px;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
+.search-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.12); border-color: var(--red); }
 
 .search-label {
   display: block;
@@ -177,7 +180,7 @@ button { font-family: inherit; }
   margin-top: 14px;
   letter-spacing: .02em;
 }
-.btn-search:hover  { opacity: .92; }
+.btn-search:hover  { opacity: .92; transform: translateY(-1px); }
 .btn-search:active { transform: scale(0.98); }
 .btn-search:disabled { opacity: .5; cursor: not-allowed; }
 .btn-search svg { width: 17px; height: 17px; flex-shrink: 0; }
@@ -413,6 +416,9 @@ body.dark .stt-badge { color: var(--gold); }
   .header-inner   { padding: 14px 16px; }
   .search-card    { padding: 18px 16px 16px; }
   .result-header  { padding: 14px 16px; }
+  .footer-title   { font-size: 12px; letter-spacing: .12em; padding: 0 28px; }
+  .search-card    { padding: 18px 16px 16px; }
+  .result-header  { padding: 14px 16px; }
   .avatar         { width: 42px; height: 42px; font-size: 16px; }
   .result-header-text h2 { font-size: 15px; }
   .footer-title   { font-size: 12px; letter-spacing: .12em; padding: 0 28px; }
@@ -421,6 +427,15 @@ body.dark .stt-badge { color: var(--gold); }
 /* Phone ≤ 520px */
 @media (max-width: 520px) {
   body            { padding: 0; }
+  .container      { padding: 16px 12px 40px; }
+  .header-inner   { padding: 12px; gap: 10px; }
+  .search-card    { padding: 16px 14px; border-radius: var(--radius); }
+  .field-input    { height: 44px; font-size: 14px; }
+  .btn-search     { height: 46px; font-size: 14px; }
+  .result-header  { padding: 12px 14px; }
+  .field-value    { font-size: 13px; }
+  .footer-title   { font-size: 11px; letter-spacing: .10em; padding: 0 20px; }
+  .footer-links a { padding: 7px 10px; font-size: 12px; }
   .container      { padding: 16px 12px 40px; }
   .header-inner   { padding: 12px; gap: 10px; }
   .header-text h1 { font-size: 13px; }
