@@ -24,6 +24,7 @@ const translations = {
     'nav.lookup':       '🔍 Tra cứu CCCD',
     'nav.recruit':      '🪖 Tuyển quân',
     'nav.edu':          '🎓 Tuyển sinh',
+    'nav.dieudong':     '📋 Quyết định ĐĐ',
 
     // ── STATS ─────────────────────────────────────────────────────────────────
     'stat.citizens':    'Công dân tuổi 17',
@@ -180,6 +181,7 @@ const translations = {
 
     // ── NAV ───────────────────────────────────────────────────────────────────
     'nav.home':         '🏠 Home',
+    // 'nav.home':         'img:images/Icon/IconHome.jpg|Home',
     'nav.intro':        '📋 About',
     'nav.news':         '📰 News',
     'nav.faq':          '❓ FAQ',
