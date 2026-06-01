@@ -1606,6 +1606,7 @@ if(statsEl)statsObs.observe(statsEl);
 
 
 
+
 function submitContact() {
   // 1. Lấy dữ liệu từ các ô nhập liệu
   const hoten = document.getElementById('c-hoten').value.trim();
@@ -1670,6 +1671,51 @@ function submitContact() {
     btnSubmit.innerHTML = originalBtnContent;
   });
 }
+function doPost(e) {
+  try {
+    var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    var data = JSON.parse(e.postData.contents);
+    
+    // 🛠️ Đọc tên tab được truyền từ Website sang (Nếu website không truyền thì mặc định là sheet4)
+    var targetSheetName = data.sheet || "sheet4";
+    var sheet = spreadsheet.getSheetByName(targetSheetName); 
+    
+    if (!sheet) {
+      return ContentService.createTextOutput(JSON.stringify({ "status": "error", "message": "Không tìm thấy tab: " + targetSheetName }))
+                           .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Ghi dữ liệu vào hàng tiếp theo
+    var timestamp = new Date();
+    sheet.appendRow([
+      timestamp, 
+      data.hoten, 
+      data.phone, 
+      data.msg
+    ]);
+    
+    // Tự động gửi mail thông báo
+    var emailNhan = "huynhtri2192003@gmail.com"; // ⚠️ Thay bằng Gmail của bạn
+    var tieuDe = "🚨 CÓ PHẢN ÁNH MỚI - WEBSITE BAN CHQS XÃ BÌNH MỸ";
+    var noiDung = "Kính gửi Ban chỉ huy,\n\n" +
+                  "Hệ thống vừa nhận được một phản ánh mới từ người dân qua Website:\n\n" +
+                  "• Lưu tại tab: " + targetSheetName + "\n" +
+                  "• Họ và tên: " + data.hoten + "\n" +
+                  "• Số điện thoại: " + data.phone + "\n" +
+                  "• Nội dung chi tiết:\n" + data.msg + "\n\n" +
+                  "• Thời gian gửi: " + timestamp.toLocaleString("vi-VN") + "\n\n" +
+                  "Vui lòng kiểm tra Google Sheet để quản lý tập trung.";
+                  
+    MailApp.sendEmail(emailNhan, tieuDe, noiDung);
+    
+    return ContentService.createTextOutput(JSON.stringify({ "status": "success" }))
+                         .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ "status": "error", "message": error.toString() }))
+                         .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 
 </script>
 
