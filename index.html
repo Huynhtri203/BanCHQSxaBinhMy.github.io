@@ -1360,72 +1360,7 @@ body.dark .press-item {
   </div>
 </div>
 
-<script>
-function submitContact() {
-  // 1. Lấy dữ liệu từ các ô nhập liệu
-  const hoten = document.getElementById('c-hoten').value.trim();
-  const phone = document.getElementById('c-phone').value.trim();
-  const msg = document.getElementById('c-msg').value.trim();
-  const btnSubmit = document.querySelector('#sec-lienhe .btn-submit');
-  const successMsg = document.getElementById('c-success');
 
-  // 2. Kiểm tra tính hợp lệ dữ liệu đầu vào
-  if (!hoten || !phone || !msg) {
-    alert("Vui lòng điền đầy đủ các thông tin bắt buộc (*)");
-    return;
-  }
-
-  // Khóa nút bấm và hiển thị trạng thái đang xử lý
-  btnSubmit.disabled = true;
-  const originalBtnContent = btnSubmit.innerHTML;
-  btnSubmit.innerHTML = "<span>Đang gửi thông tin...</span>";
-
-  // ⚠️ HÃY DÁN ĐƯỜNG LINK GOOGLE APPS SCRIPT CỦA BẠN VÀO ĐÂY ⚠️
-  const GOOGLE_SCRIPT_URL = "DÁN_LINK_WEB_APP_CỦA_BẠN_VÀO_ĐÂY";
-
-  // 🛠️ ĐÃ SỬA: Bổ sung "sheet: 'sheet4'" vào gói dữ liệu gửi đi
-  const payload = {
-    sheet: "sheet4", 
-    hoten: hoten,
-    phone: phone,
-    msg: msg
-  };
-
-  // 3. Tiến hành truyền dữ liệu không đồng bộ (Asynchronous) lên Cloud
-  fetch(GOOGLE_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors", 
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify(payload)
-  })
-  .then(() => {
-    // 4. Xử lý hiển thị giao diện thành công
-    successMsg.style.display = 'block';
-    
-    // Tích hợp đồng bộ hệ thống dịch tự động đa ngôn ngữ sẵn có của bạn
-    if (typeof t === 'function') {
-      successMsg.textContent = t('contact.form.success');
-    }
-    
-    // Xóa trống các ô dữ liệu cũ sau khi gửi xong
-    document.getElementById('c-hoten').value = '';
-    document.getElementById('c-phone').value = '';
-    document.getElementById('c-msg').value = '';
-    
-    // Giữ trạng thái khóa nút để hạn chế hành vi spam gửi liên tục dữ liệu rác
-    btnSubmit.disabled = true;
-    btnSubmit.innerHTML = originalBtnContent;
-  })
-  .catch(error => {
-    console.error("Lỗi gửi phản ánh:", error);
-    alert("Có lỗi kết nối mạng xảy ra. Vui lòng thử lại!");
-    
-    // Trả lại trạng thái nút ban đầu nếu thất bại để họ thực hiện lại
-    btnSubmit.disabled = false;
-    btnSubmit.innerHTML = originalBtnContent;
-  });
-}
-</script>
 
 </div><!-- end main-container -->
 
@@ -1667,6 +1602,75 @@ const statsObs=new IntersectionObserver((entries)=>{
 },{threshold:.5});
 const statsEl=document.querySelector('.stats-strip');
 if(statsEl)statsObs.observe(statsEl);
+
+
+
+
+function submitContact() {
+  // 1. Lấy dữ liệu từ các ô nhập liệu
+  const hoten = document.getElementById('c-hoten').value.trim();
+  const phone = document.getElementById('c-phone').value.trim();
+  const msg = document.getElementById('c-msg').value.trim();
+  const btnSubmit = document.querySelector('#sec-lienhe .btn-submit');
+  const successMsg = document.getElementById('c-success');
+
+  // 2. Kiểm tra tính hợp lệ dữ liệu đầu vào
+  if (!hoten || !phone || !msg) {
+    alert("Vui lòng điền đầy đủ các thông tin bắt buộc (*)");
+    return;
+  }
+
+  // Khóa nút bấm và hiển thị trạng thái đang xử lý
+  btnSubmit.disabled = true;
+  const originalBtnContent = btnSubmit.innerHTML;
+  btnSubmit.innerHTML = "<span>Đang gửi thông tin...</span>";
+
+  // ⚠️ HÃY DÁN ĐƯỜNG LINK GOOGLE APPS SCRIPT CỦA BẠN VÀO ĐÂY ⚠️
+  const GOOGLE_SCRIPT_URL = "DÁN_LINK_WEB_APP_CỦA_BẠN_VÀO_ĐÂY";
+
+  // 🛠️ ĐÃ SỬA: Bổ sung "sheet: 'sheet4'" vào gói dữ liệu gửi đi
+  const payload = {
+    sheet: "sheet4", 
+    hoten: hoten,
+    phone: phone,
+    msg: msg
+  };
+
+  // 3. Tiến hành truyền dữ liệu không đồng bộ (Asynchronous) lên Cloud
+  fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors", 
+    headers: { "Content-Type": "text/plain" },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    // 4. Xử lý hiển thị giao diện thành công
+    successMsg.style.display = 'block';
+    
+    // Tích hợp đồng bộ hệ thống dịch tự động đa ngôn ngữ sẵn có của bạn
+    if (typeof t === 'function') {
+      successMsg.textContent = t('contact.form.success');
+    }
+    
+    // Xóa trống các ô dữ liệu cũ sau khi gửi xong
+    document.getElementById('c-hoten').value = '';
+    document.getElementById('c-phone').value = '';
+    document.getElementById('c-msg').value = '';
+    
+    // Giữ trạng thái khóa nút để hạn chế hành vi spam gửi liên tục dữ liệu rác
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = originalBtnContent;
+  })
+  .catch(error => {
+    console.error("Lỗi gửi phản ánh:", error);
+    alert("Có lỗi kết nối mạng xảy ra. Vui lòng thử lại!");
+    
+    // Trả lại trạng thái nút ban đầu nếu thất bại để họ thực hiện lại
+    btnSubmit.disabled = false;
+    btnSubmit.innerHTML = originalBtnContent;
+  });
+}
+
 </script>
 
 
